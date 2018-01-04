@@ -16,7 +16,7 @@ class RegisterFlowView: ORStackView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         backgroundColor = .white
         bottomMarginHeight = CGFloat(NSNotFound)
         updateConstraints()
@@ -29,11 +29,29 @@ class RegisterFlowView: ORStackView {
 
     fileprivate lazy var subViewParams: Array<SubViewParams> = {
         return [
-            [SubViewParams(title: "Mobile", getters: [{ $0.phoneNumber.value }])],
+            [
+                SubViewParams(
+                    title: "Mobile",
+                    getters: [{ $0.phoneNumber.value }]
+                )
+            ],
             [SubViewParams(title: "Email", getters: [{ $0.email.value }])],
-            [SubViewParams(title: "Postal/Zip", getters: [{ $0.zipCode.value }])].filter { _ in self.appSetup.needsZipCode },
-            [SubViewParams(title: "Credit Card", getters: [{ $0.creditCardName.value }, { $0.creditCardType.value }])]
-        ].flatMap {$0}
+            [
+                SubViewParams(
+                    title: "Postal/Zip",
+                    getters: [{ $0.zipCode.value }]
+                )
+            ].filter { _ in self.appSetup.needsZipCode },
+            [
+                SubViewParams(
+                    title: "Credit Card",
+                    getters: [
+                        { $0.creditCardName.value },
+                        { $0.creditCardType.value }
+                    ]
+                )
+            ]
+        ].flatMap { $0 }
     }()
 
     func update() {
@@ -50,7 +68,11 @@ class RegisterFlowView: ORStackView {
                 itemView.createInfoLabel(value)
 
                 let button = itemView.createJumpToButtonAtIndex(i)
-                button.addTarget(self, action: #selector(pressed(_:)), for: .touchUpInside)
+                button.addTarget(
+                    self,
+                    action: #selector(pressed(_:)),
+                    for: .touchUpInside
+                )
 
                 itemView.constrainHeight("44")
             } else {
@@ -73,7 +95,7 @@ class RegisterFlowView: ORStackView {
         highlightedIndex.value = sender.tag
     }
 
-    class ItemView : UIView {
+    class ItemView: UIView {
 
         var titleLabel: UILabel?
 
@@ -81,7 +103,7 @@ class RegisterFlowView: ORStackView {
             titleLabel?.textColor = .artsyPurpleRegular()
         }
 
-        func createTitleViewWithTitle(_ title: String)  {
+        func createTitleViewWithTitle(_ title: String) {
             let label = UILabel(frame: bounds)
             label.font = UIFont.sansSerifFont(withSize: 16)
             label.text = title.uppercased()
@@ -116,7 +138,7 @@ class RegisterFlowView: ORStackView {
             button.alignTrailingEdge(with: self, predicate: "0")
             button.constrainWidth("36")
             button.constrainHeight("36")
-            
+
             return button
 
         }

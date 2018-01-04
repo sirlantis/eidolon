@@ -8,7 +8,7 @@ enum EidolonError: String {
     case missingData
 }
 
-extension EidolonError: Swift.Error { }
+extension EidolonError: Swift.Error {}
 
 extension Observable {
 

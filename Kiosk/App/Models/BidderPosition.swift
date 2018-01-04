@@ -7,7 +7,12 @@ final class BidderPosition: NSObject, JSONAbleType {
     let maxBidAmountCents: Currency
     let processedAt: Date?
 
-    init(id: String, highestBid: Bid?, maxBidAmountCents: Currency, processedAt: Date?) {
+    init(
+        id: String,
+        highestBid: Bid?,
+        maxBidAmountCents: Currency,
+        processedAt: Date?
+    ) {
         self.id = id
         self.highestBid = highestBid
         self.maxBidAmountCents = maxBidAmountCents
@@ -19,13 +24,22 @@ final class BidderPosition: NSObject, JSONAbleType {
 
         let id = json["id"].stringValue
         let maxBidAmount = json["max_bid_amount_cents"].uInt64Value
-        let processedAt = KioskDateFormatter.fromString(json["processed_at"].stringValue)
+        let processedAt = KioskDateFormatter.fromString(
+            json["processed_at"].stringValue
+        )
 
         var bid: Bid?
-        if let bidDictionary = json["highest_bid"].object as? [String: AnyObject] {
+        if
+            let bidDictionary =
+                json["highest_bid"].object as? [String: AnyObject] {
             bid = Bid.fromJSON(bidDictionary)
         }
 
-        return BidderPosition(id: id, highestBid: bid, maxBidAmountCents: maxBidAmount, processedAt: processedAt)
+        return BidderPosition(
+            id: id,
+            highestBid: bid,
+            maxBidAmountCents: maxBidAmount,
+            processedAt: processedAt
+        )
     }
 }

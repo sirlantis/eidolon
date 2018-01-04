@@ -4,11 +4,20 @@ class AuctionWebViewController: WebViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        
+
+        let flexibleSpace = UIBarButtonItem(
+            barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace,
+            target: nil,
+            action: nil
+        )
+
         let exitImage = UIImage(named: "toolbar_close")
-        let backwardBarItem = UIBarButtonItem(image: exitImage, style: .plain, target: self, action: #selector(exit));
+        let backwardBarItem = UIBarButtonItem(
+            image: exitImage,
+            style: .plain,
+            target: self,
+            action: #selector(exit)
+        )
         let allItems = self.toolbarItems! + [flexibleSpace, backwardBarItem]
         toolbarItems = allItems
     }
@@ -18,6 +27,6 @@ class AuctionWebViewController: WebViewController {
             _ = self?.navigationController?.popViewController(animated: true)
             return
         }
-        self.present(passwordVC, animated: true) {}
+        self.present(passwordVC, animated: true) { }
     }
 }

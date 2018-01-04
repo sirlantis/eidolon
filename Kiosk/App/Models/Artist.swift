@@ -15,13 +15,13 @@ final class Artist: NSObject, JSONAbleType {
         self.sortableID = sortableID
     }
 
-    static func fromJSON(_ json:[String: Any]) -> Artist {
+    static func fromJSON(_ json: [String: Any]) -> Artist {
         let json = JSON(json)
 
         let id = json["id"].stringValue
         let name = json["name"].stringValue
         let sortableID = json["sortable_id"].string
-        return Artist(id: id, name:name, sortableID:sortableID)
+        return Artist(id: id, name: name, sortableID: sortableID)
     }
 
 }

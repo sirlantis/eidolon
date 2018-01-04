@@ -3,13 +3,20 @@ import ReachabilitySwift
 import Moya
 
 // Ideally a Pod. For now a file.
-func delayToMainThread(_ delay:Double, closure:@escaping ()->()) {
-    DispatchQueue.main.asyncAfter (
-        deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
+func delayToMainThread(_ delay: Double, closure: @escaping () -> ()) {
+    DispatchQueue.main.asyncAfter(
+        deadline: DispatchTime.now() + Double(Int64(
+            delay * Double(NSEC_PER_SEC)
+        )) / Double(NSEC_PER_SEC),
+        execute: closure
+    )
 }
 
 func logPath() -> URL {
-    let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
+    let docs = FileManager.default.urls(
+        for: .documentDirectory,
+        in: .userDomainMask
+    ).last!
     return docs.appendingPathComponent("logger.txt")
 }
 
@@ -22,9 +29,7 @@ func connectedToInternetOrStubbing() -> Observable<Bool> {
 
     let stubbing = Observable.just(APIKeys.sharedKeys.stubResponses)
 
-    guard let online = reachabilityManager?.reach else {
-        return stubbing
-    }
+    guard let online = reachabilityManager?.reach else { return stubbing }
 
     return [online, stubbing].combineLatestOr()
 }
@@ -32,7 +37,6 @@ func connectedToInternetOrStubbing() -> Observable<Bool> {
 func responseIsOK(_ response: Response) -> Bool {
     return response.statusCode == 200
 }
-
 
 func detectDevelopmentEnvironment() -> Bool {
     var developmentEnvironment = false
@@ -52,9 +56,7 @@ private class ReachabilityManager {
     }
 
     init?() {
-        guard let r = Reachability() else {
-            return nil
-        }
+        guard let r = Reachability() else { return nil }
         self.reachability = r
 
         do {
@@ -89,7 +91,10 @@ func bindingErrorToInterface(_ error: Swift.Error) {
 }
 
 // Applies an instance method to the instance with an unowned reference.
-func applyUnowned<Type: AnyObject, Parameters, ReturnValue>(_ instance: Type, _ function: @escaping ((Type) -> (Parameters) -> ReturnValue)) -> ((Parameters) -> ReturnValue) {
+func applyUnowned<Type: AnyObject, Parameters, ReturnValue>(
+    _ instance: Type,
+    _ function: @escaping ((Type) -> (Parameters) -> ReturnValue)
+) -> ((Parameters) -> ReturnValue) {
     return { [unowned instance] parameters -> ReturnValue in
         return function(instance)(parameters)
     }

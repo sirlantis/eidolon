@@ -8,24 +8,37 @@ class OnlineProvider<Target> where Target: Moya.TargetType {
     fileprivate let online: Observable<Bool>
     fileprivate let provider: MoyaProvider<Target>
 
-    init(endpointClosure: @escaping MoyaProvider<Target>.EndpointClosure = MoyaProvider.defaultEndpointMapping,
-        requestClosure: @escaping MoyaProvider<Target>.RequestClosure = MoyaProvider.defaultRequestMapping,
-        stubClosure: @escaping MoyaProvider<Target>.StubClosure = MoyaProvider.neverStub,
+    init(
+        endpointClosure: @escaping MoyaProvider<Target>.EndpointClosure =
+            MoyaProvider.defaultEndpointMapping,
+        requestClosure: @escaping MoyaProvider<Target>.RequestClosure =
+            MoyaProvider.defaultRequestMapping,
+        stubClosure: @escaping MoyaProvider<Target>.StubClosure =
+            MoyaProvider.neverStub,
         manager: Manager = MoyaProvider<Target>.defaultAlamofireManager(),
         plugins: [PluginType] = [],
         trackInflights: Bool = false,
-        online: Observable<Bool> = connectedToInternetOrStubbing()) {
+        online: Observable<Bool> = connectedToInternetOrStubbing()
+    ) {
 
         self.online = online
-        self.provider = MoyaProvider(endpointClosure: endpointClosure, requestClosure: requestClosure, stubClosure: stubClosure, manager: manager, plugins: plugins, trackInflights: trackInflights)
+        self.provider = MoyaProvider(
+            endpointClosure: endpointClosure,
+            requestClosure: requestClosure,
+            stubClosure: stubClosure,
+            manager: manager,
+            plugins: plugins,
+            trackInflights: trackInflights
+        )
     }
 
     func request(_ token: Target) -> Observable<Moya.Response> {
         let actualRequest = provider.rx.request(token)
         return online
-            .ignore(value: false)  // Wait until we're online
-            .take(1)        // Take 1 to make sure we only invoke the API once.
-            .flatMap { _ in // Turn the online state into a network request
+            .ignore(value: false) // Wait until we're online
+            .take(1) // Take 1 to make sure we only invoke the API once.
+            .flatMap { _ in
+                // Turn the online state into a network request
                 return actualRequest
             }
 
@@ -34,7 +47,9 @@ class OnlineProvider<Target> where Target: Moya.TargetType {
 
 protocol NetworkingType {
     associatedtype T: TargetType, ArtsyAPIType
-    var provider: OnlineProvider<T> { get }
+    var provider: OnlineProvider<T> {
+        get
+    }
 }
 
 struct Networking: NetworkingType {
@@ -59,20 +74,26 @@ private extension Networking {
             return Observable.just(appToken.token)
         }
 
-        let newTokenRequest = self.provider.request(ArtsyAPI.xApp)
+        let newTokenRequest = self.provider
+            .request(ArtsyAPI.xApp)
             .filterSuccessfulStatusCodes()
             .mapJSON()
             .map { element -> (token: String?, expiry: String?) in
-                guard let dictionary = element as? NSDictionary else { return (token: nil, expiry: nil) }
+                guard let dictionary = element as? NSDictionary else {
+                    return (token: nil, expiry: nil)
+                }
 
-                return (token: dictionary["xapp_token"] as? String, expiry: dictionary["expires_in"] as? String)
+                return (
+                    token: dictionary["xapp_token"] as? String,
+                    expiry: dictionary["expires_in"] as? String
+                )
             }
             .do(onNext: { element in
                 // These two lines set the defaults values injected into appToken
                 appToken.token = element.0
                 appToken.expiry = KioskDateFormatter.fromString(element.1 ?? "")
             })
-            .map { (token, expiry) -> String? in
+            .map { token, expiry -> String? in
                 return token
             }
             .logError()
@@ -84,7 +105,10 @@ private extension Networking {
 // "Public" interfaces
 extension Networking {
     /// Request to fetch a given target. Ensures that valid XApp tokens exist before making request
-    func request(_ token: ArtsyAPI, defaults: UserDefaults = UserDefaults.standard) -> Observable<Moya.Response> {
+    func request(
+        _ token: ArtsyAPI,
+        defaults: UserDefaults = UserDefaults.standard
+    ) -> Observable<Moya.Response> {
 
         let actualRequest = self.provider.request(token)
         return self.XAppTokenRequest(defaults).flatMap { _ in actualRequest }
@@ -92,7 +116,10 @@ extension Networking {
 }
 
 extension AuthorizedNetworking {
-    func request(_ token: ArtsyAuthenticatedAPI, defaults: UserDefaults = UserDefaults.standard) -> Observable<Moya.Response> {
+    func request(
+        _ token: ArtsyAuthenticatedAPI,
+        defaults: UserDefaults = UserDefaults.standard
+    ) -> Observable<Moya.Response> {
         return self.provider.request(token)
     }
 }
@@ -104,36 +131,66 @@ extension NetworkingType {
         return Networking(provider: newProvider(plugins))
     }
 
-    static func newAuthorizedNetworking(_ xAccessToken: String) -> AuthorizedNetworking {
-        return AuthorizedNetworking(provider: newProvider(authenticatedPlugins, xAccessToken: xAccessToken))
+    static func newAuthorizedNetworking(
+        _ xAccessToken: String
+    ) -> AuthorizedNetworking {
+        return AuthorizedNetworking(provider: newProvider(
+            authenticatedPlugins,
+            xAccessToken: xAccessToken
+        ))
     }
 
     static func newStubbingNetworking() -> Networking {
-        return Networking(provider: OnlineProvider(endpointClosure: endpointsClosure(), requestClosure: Networking.endpointResolver(), stubClosure: MoyaProvider.immediatelyStub, online: .just(true)))
+        return Networking(provider: OnlineProvider(
+            endpointClosure: endpointsClosure(),
+            requestClosure: Networking.endpointResolver(),
+            stubClosure: MoyaProvider.immediatelyStub,
+            online: .just(true)
+        ))
     }
 
     static func newAuthorizedStubbingNetworking() -> AuthorizedNetworking {
-        return AuthorizedNetworking(provider: OnlineProvider(endpointClosure: endpointsClosure(), requestClosure: Networking.endpointResolver(), stubClosure: MoyaProvider.immediatelyStub, online: .just(true)))
+        return AuthorizedNetworking(provider: OnlineProvider(
+            endpointClosure: endpointsClosure(),
+            requestClosure: Networking.endpointResolver(),
+            stubClosure: MoyaProvider.immediatelyStub,
+            online: .just(true)
+        ))
     }
 
-    static func endpointsClosure<T>(_ xAccessToken: String? = nil) -> (T) -> Endpoint<T> where T: TargetType, T: ArtsyAPIType {
+    static func endpointsClosure<T>(_ xAccessToken: String? = nil) -> (
+        T
+    ) -> Endpoint<T> where T: TargetType, T: ArtsyAPIType {
         return { target in
-            var endpoint: Endpoint<T> = Endpoint<T>(url: url(target), sampleResponseClosure: {.networkResponse(200, target.sampleData)}, method: target.method, task: target.task)
+            var endpoint: Endpoint<T> = Endpoint<T>(
+                url: url(target),
+                sampleResponseClosure: {
+                    .networkResponse(200, target.sampleData)
+                },
+                method: target.method,
+                task: target.task
+            )
 
             // If we were given an xAccessToken, add it
             if let xAccessToken = xAccessToken {
-                endpoint = endpoint.adding(newHTTPHeaderFields: ["X-Access-Token": xAccessToken])
+                endpoint = endpoint.adding(
+                    newHTTPHeaderFields: ["X-Access-Token": xAccessToken]
+                )
             }
 
             // Sign all non-XApp, non-XAuth token requests
             if target.addXAuth {
-                return endpoint.adding(newHTTPHeaderFields:["X-Xapp-Token": XAppToken().token ?? ""])
+                return endpoint.adding(
+                    newHTTPHeaderFields: [
+                        "X-Xapp-Token": XAppToken().token ?? ""
+                    ]
+                )
             } else {
                 return endpoint
             }
         }
     }
-    
+
     static func APIKeysBasedStubBehaviour<T>(_: T) -> Moya.StubBehavior {
         return APIKeys.sharedKeys.stubResponses ? .immediate : .never
     }
@@ -143,29 +200,38 @@ extension NetworkingType {
             NetworkLogger(blacklist: { target -> Bool in
                 guard let target = target as? ArtsyAPI else { return false }
 
-                switch target {
-                case .ping: return true
-                default: return false
+                switch target{
+                case .ping:
+                    return true
+                default:
+                    return false
                 }
             })
         ]
     }
     static var authenticatedPlugins: [PluginType] {
-        return [NetworkLogger(whitelist: { target -> Bool in
-            guard let target = target as? ArtsyAuthenticatedAPI else { return false }
+        return [
+            NetworkLogger(whitelist: { target -> Bool in
+                guard let target = target as? ArtsyAuthenticatedAPI else {
+                    return false
+                }
 
-            switch target {
-            case .myBidPosition: return true
-            case .findMyBidderRegistration: return true
-            default: return false
-            }
-        })
+                switch target{
+                case .myBidPosition:
+                    return true
+                case .findMyBidderRegistration:
+                    return true
+                default:
+                    return false
+                }
+            })
         ]
     }
 
     // (Endpoint<Target>, NSURLRequest -> Void) -> Void
-    static func endpointResolver<T>() -> MoyaProvider<T>.RequestClosure where T: TargetType {
-        return { (endpoint, closure) in
+    static func endpointResolver<T>() -> MoyaProvider<T>.RequestClosure where
+            T: TargetType {
+        return { endpoint, closure in
             var request = endpoint.urlRequest!
             request.httpShouldHandleCookies = false
             closure(.success(request))
@@ -173,9 +239,14 @@ extension NetworkingType {
     }
 }
 
-private func newProvider<T>(_ plugins: [PluginType], xAccessToken: String? = nil) -> OnlineProvider<T> where T: ArtsyAPIType {
-    return OnlineProvider(endpointClosure: Networking.endpointsClosure(xAccessToken),
+private func newProvider<T>(
+    _ plugins: [PluginType],
+    xAccessToken: String? = nil
+) -> OnlineProvider<T> where T: ArtsyAPIType {
+    return OnlineProvider(
+        endpointClosure: Networking.endpointsClosure(xAccessToken),
         requestClosure: Networking.endpointResolver(),
         stubClosure: Networking.APIKeysBasedStubBehaviour,
-        plugins: plugins)
+        plugins: plugins
+    )
 }

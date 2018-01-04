@@ -14,13 +14,18 @@ final class Bidder: NSObject, JSONAbleType {
         self.pin = pin
     }
 
-    static func fromJSON(_ json:[String: Any]) -> Bidder {
+    static func fromJSON(_ json: [String: Any]) -> Bidder {
         let json = JSON(json)
 
         let id = json["id"].stringValue
         let saleID = json["sale"]["id"].stringValue
         let createdByAdmin = json["created_by_admin"].bool ?? false
         let pin = json["pin"].stringValue
-        return Bidder(id: id, saleID: saleID, createdByAdmin: createdByAdmin, pin: pin)
+        return Bidder(
+            id: id,
+            saleID: saleID,
+            createdByAdmin: createdByAdmin,
+            pin: pin
+        )
     }
 }

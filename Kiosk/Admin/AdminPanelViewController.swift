@@ -5,7 +5,6 @@ class AdminPanelViewController: UIViewController {
 
     @IBOutlet weak var auctionIDLabel: UILabel!
 
-
     @IBAction func backTapped(_ sender: AnyObject) {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
         appDelegate().setHelpButtonHidden(false)
@@ -25,7 +24,9 @@ class AdminPanelViewController: UIViewController {
         if segue == .LoadAdminWebViewController {
             let webVC = segue.destination as! AuctionWebViewController
             let auctionID = AppSetup.sharedState.auctionID
-            let base = AppSetup.sharedState.useStaging ? "staging.artsy.net" : "artsy.net"
+            let base = AppSetup.sharedState.useStaging
+                ? "staging.artsy.net"
+                : "artsy.net"
 
             webVC.url = URL(string: "https://\(base)/feature/\(auctionID)")!
 
@@ -40,7 +41,11 @@ class AdminPanelViewController: UIViewController {
         if APIKeys.sharedKeys.stubResponses {
             auctionIDLabel.text = "STUBBING API RESPONSES\nNOT CONTACTING ARTSY API"
         } else {
-            let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String)  ?? "Unknown"
+            let version = (
+                Bundle.main.object(
+                    forInfoDictionaryKey: "CFBundleShortVersionString"
+                ) as? String
+            ) ?? "Unknown"
             auctionIDLabel.text = "\(state.auctionID), Kiosk version: \(version)"
         }
 
@@ -57,26 +62,30 @@ class AdminPanelViewController: UIViewController {
     @IBOutlet weak var environmentChangeButton: UIButton!
     @IBAction func switchStagingProductionTapped(_ sender: AnyObject) {
         let defaults = UserDefaults.standard
-        defaults.set(!AppSetup.sharedState.useStaging, forKey: "KioskUseStaging")
+        defaults.set(
+            !AppSetup.sharedState.useStaging,
+            forKey: "KioskUseStaging"
+        )
 
         defaults.removeObject(forKey: XAppToken.DefaultsKeys.TokenKey.rawValue)
-        defaults.removeObject(forKey: XAppToken.DefaultsKeys.TokenExpiry.rawValue)
+        defaults.removeObject(
+            forKey: XAppToken.DefaultsKeys.TokenExpiry.rawValue
+        )
 
         defaults.synchronize()
-        delayToMainThread(1){
-            exit(1)
-        }
+        delayToMainThread(1) { exit(1) }
 
     }
 
     @IBOutlet weak var showAdminButtonsButton: UIButton!
     @IBAction func toggleAdminButtons(_ sender: UIButton) {
         let defaults = UserDefaults.standard
-        defaults.set(!AppSetup.sharedState.showDebugButtons, forKey: "KioskShowDebugButtons")
+        defaults.set(
+            !AppSetup.sharedState.showDebugButtons,
+            forKey: "KioskShowDebugButtons"
+        )
         defaults.synchronize()
-        delayToMainThread(1){
-            exit(1)
-        }
+        delayToMainThread(1) { exit(1) }
 
     }
 
@@ -84,10 +93,11 @@ class AdminPanelViewController: UIViewController {
     @IBOutlet weak var toggleCardReaderButton: SecondaryActionButton!
     @IBAction func toggleCardReaderTapped(_ sender: AnyObject) {
         let defaults = UserDefaults.standard
-        defaults.set(!AppSetup.sharedState.disableCardReader, forKey: "KioskDisableCardReader")
+        defaults.set(
+            !AppSetup.sharedState.disableCardReader,
+            forKey: "KioskDisableCardReader"
+        )
         defaults.synchronize()
-        delayToMainThread(1){
-            exit(1)
-        }
+        delayToMainThread(1) { exit(1) }
     }
 }
