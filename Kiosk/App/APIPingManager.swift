@@ -11,8 +11,7 @@ class APIPingManager {
     init(provider: Networking) {
         self.provider = provider
 
-        letOnline = Observable<Int>
-            .interval(syncInterval, scheduler: MainScheduler.instance)
+        letOnline = Observable<Int>.interval(syncInterval, scheduler: MainScheduler.instance)
             .flatMap { [weak self] _ in
                 return self?.ping() ?? .empty()
             }
