@@ -15,8 +15,7 @@ extension UIViewController {
     }
 
     func retrieveBidderDetails(provider: Networking, email: String) -> Observable<Void> {
-        return Observable
-            .just(email)
+        return Observable.just(email)
             .take(1)
             .do(onNext: { _ in SVProgressHUD.show() })
             .flatMap { email -> Observable<Void> in
