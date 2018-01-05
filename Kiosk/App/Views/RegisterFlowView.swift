@@ -29,28 +29,15 @@ class RegisterFlowView: ORStackView {
 
     fileprivate lazy var subViewParams: Array<SubViewParams> = {
         return [
-            [
-                SubViewParams(
-                    title: "Mobile",
-                    getters: [{ $0.phoneNumber.value }]
-                )
-            ],
+            [SubViewParams(title: "Mobile", getters: [{ $0.phoneNumber.value }])],
             [SubViewParams(title: "Email", getters: [{ $0.email.value }])],
-            [
-                SubViewParams(
-                    title: "Postal/Zip",
-                    getters: [{ $0.zipCode.value }]
-                )
-            ].filter { _ in self.appSetup.needsZipCode },
-            [
-                SubViewParams(
-                    title: "Credit Card",
-                    getters: [
-                        { $0.creditCardName.value },
-                        { $0.creditCardType.value }
-                    ]
-                )
-            ]
+            [SubViewParams(title: "Postal/Zip", getters: [{ $0.zipCode.value }])].filter { _ in
+                self.appSetup.needsZipCode
+            },
+            [SubViewParams(
+                title: "Credit Card",
+                getters: [{ $0.creditCardName.value }, { $0.creditCardType.value }]
+            )]
         ].flatMap { $0 }
     }()
 
@@ -68,11 +55,7 @@ class RegisterFlowView: ORStackView {
                 itemView.createInfoLabel(value)
 
                 let button = itemView.createJumpToButtonAtIndex(i)
-                button.addTarget(
-                    self,
-                    action: #selector(pressed(_:)),
-                    for: .touchUpInside
-                )
+                button.addTarget(self, action: #selector(pressed(_:)), for: .touchUpInside)
 
                 itemView.constrainHeight("44")
             } else {

@@ -5,18 +5,15 @@ import Moya
 // Ideally a Pod. For now a file.
 func delayToMainThread(_ delay: Double, closure: @escaping () -> ()) {
     DispatchQueue.main.asyncAfter(
-        deadline: DispatchTime.now() + Double(Int64(
-            delay * Double(NSEC_PER_SEC)
-        )) / Double(NSEC_PER_SEC),
+        deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(
+            NSEC_PER_SEC
+        ),
         execute: closure
     )
 }
 
 func logPath() -> URL {
-    let docs = FileManager.default.urls(
-        for: .documentDirectory,
-        in: .userDomainMask
-    ).last!
+    let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
     return docs.appendingPathComponent("logger.txt")
 }
 

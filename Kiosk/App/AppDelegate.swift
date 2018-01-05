@@ -19,7 +19,7 @@ import Stripe
         height: UIScreen.main.bounds.width
     ))
 
-    fileprivate (set) var provider = Networking.newDefaultNetworking()
+    fileprivate(set) var provider = Networking.newDefaultNetworking()
 
     func application(
         _ application: UIApplication,
@@ -45,13 +45,11 @@ import Stripe
 
         let defaults = UserDefaults.standard
         defaults.removeObject(forKey: XAppToken.DefaultsKeys.TokenKey.rawValue)
-        defaults.removeObject(
-            forKey: XAppToken.DefaultsKeys.TokenExpiry.rawValue
-        )
+        defaults.removeObject(forKey: XAppToken.DefaultsKeys.TokenExpiry.rawValue)
 
         let auctionStoryboard = UIStoryboard.auction()
-        let appViewController =
-            auctionStoryboard.instantiateInitialViewController() as? AppViewController
+        let appViewController = auctionStoryboard.instantiateInitialViewController()
+            as? AppViewController
         appViewController?.provider = provider
         window?.rootViewController = appViewController
         window?.makeKeyAndVisible()
@@ -81,17 +79,13 @@ import Stripe
     }
 
     func setupUserAgent() {
-        let version =
-            Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String?
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String?
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as! String?
 
         let webView = UIWebView(frame: CGRect.zero)
-        let oldAgent = webView.stringByEvaluatingJavaScript(
-            from: "navigator.userAgent"
-        )
+        let oldAgent = webView.stringByEvaluatingJavaScript(from: "navigator.userAgent")
 
-        let agentString =
-            "\(String(describing: oldAgent)) Artsy-Mobile/\(version!) Eigen/\(build!) Kiosk Eidolon"
+        let agentString = "\(String(describing: oldAgent)) Artsy-Mobile/\(version!) Eigen/\(build!) Kiosk Eidolon"
 
         let defaults = UserDefaults.standard
         let userAgentDict = ["UserAgent": agentString]

@@ -18,9 +18,7 @@ class SystemTime {
 
                 let timestamp: String = (dictionary["iso8601"] as? String) ?? ""
                 if let artsyDate = KioskDateFormatter.fromString(timestamp) {
-                    self?.systemTimeInterval = Date().timeIntervalSince(
-                        artsyDate
-                    )
+                    self?.systemTimeInterval = Date().timeIntervalSince(artsyDate)
                 }
 
             })

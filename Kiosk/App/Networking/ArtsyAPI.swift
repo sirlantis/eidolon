@@ -66,23 +66,20 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
 
     var task: Task {
         let encoding: ParameterEncoding
-        switch self.method{
+        switch self.method {
         case .post:
             encoding = JSONEncoding.default
         default:
             encoding = URLEncoding.default
         }
         if let requestParameters = parameters {
-            return .requestParameters(
-                parameters: requestParameters,
-                encoding: encoding
-            )
+            return .requestParameters(parameters: requestParameters, encoding: encoding)
         }
         return .requestPlain
     }
 
     var path: String {
-        switch self{
+        switch self {
 
         case .xApp:
             return "/api/v1/xapp_token"
@@ -148,7 +145,7 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
     }
 
     var parameters: [String: Any]? {
-        switch self{
+        switch self {
 
         case .xAuth(let email, let password):
             return [
@@ -160,27 +157,15 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
             ]
 
         case .xApp:
-            return [
-                "client_id": APIKeys.sharedKeys.key,
-                "client_secret": APIKeys.sharedKeys.secret
-            ]
+            return ["client_id": APIKeys.sharedKeys.key, "client_secret": APIKeys.sharedKeys.secret]
 
         case .auctions:
             return ["is_auction": "true" as AnyObject]
 
         case .trustToken(let number, let auctionID):
-            return [
-                "number": number as AnyObject,
-                "auction_pin": auctionID as AnyObject
-            ]
+            return ["number": number as AnyObject, "auction_pin": auctionID as AnyObject]
 
-        case .createUser(
-            let email,
-            let password,
-            let phone,
-            let postCode,
-            let name
-        ):
+        case .createUser(let email, let password, let phone, let postCode, let name):
             return [
                 "email": email as AnyObject,
                 "password": password as AnyObject,
@@ -190,10 +175,7 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
             ]
 
         case .bidderDetailsNotification(let auctionID, let identifier):
-            return [
-                "sale_id": auctionID as AnyObject,
-                "identifier": identifier as AnyObject
-            ]
+            return ["sale_id": auctionID as AnyObject, "identifier": identifier as AnyObject]
 
         case .lostPasswordNotification(let email):
             return ["email": email as AnyObject]
@@ -202,20 +184,13 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
             return ["email": email as AnyObject]
 
         case .findBidderRegistration(let auctionID, let phone):
-            return [
-                "sale_id": auctionID as AnyObject,
-                "number": phone as AnyObject
-            ]
+            return ["sale_id": auctionID as AnyObject, "number": phone as AnyObject]
 
         case .auctionListings(_, let page, let pageSize):
             return ["size": pageSize as AnyObject, "page": page as AnyObject]
 
         case .activeAuctions:
-            return [
-                "is_auction": true as AnyObject,
-                "live": true as AnyObject,
-                "size": 100
-            ]
+            return ["is_auction": true as AnyObject, "live": true as AnyObject, "size": 100]
 
         default:
             return nil
@@ -223,7 +198,7 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
     }
 
     var method: Moya.Method {
-        switch self{
+        switch self {
         case .lostPasswordNotification , .createUser:
             return .post
         case .findExistingEmailRegistration:
@@ -236,7 +211,7 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
     }
 
     var sampleData: Data {
-        switch self{
+        switch self {
 
         case .xApp:
             return stubbedResponse("XApp")
@@ -294,7 +269,7 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
     }
 
     var addXAuth: Bool {
-        switch self{
+        switch self {
         case .xApp:
             return false
         case .xAuth:
@@ -314,20 +289,17 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
     var task: Task {
         let requestParameters = parameters ?? [:]
         let encoding: ParameterEncoding
-        switch self.method{
+        switch self.method {
         case .post:
             encoding = JSONEncoding.default
         default:
             encoding = URLEncoding.default
         }
-        return .requestParameters(
-            parameters: requestParameters,
-            encoding: encoding
-        )
+        return .requestParameters(parameters: requestParameters, encoding: encoding)
     }
 
     var path: String {
-        switch self{
+        switch self {
 
         case .registerToBid:
             return "/api/v1/bidder"
@@ -374,7 +346,7 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
     }
 
     var parameters: [String: Any]? {
-        switch self{
+        switch self {
 
         case .registerToBid(let auctionID):
             return ["sale_id": auctionID as AnyObject]
@@ -408,10 +380,7 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
             ]
 
         case .myBidPositionsForAuctionArtwork(let auctionID, let artworkID):
-            return [
-                "sale_id": auctionID as AnyObject,
-                "artwork_id": artworkID as AnyObject
-            ]
+            return ["sale_id": auctionID as AnyObject, "artwork_id": artworkID as AnyObject]
 
         default:
             return nil
@@ -419,7 +388,7 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
     }
 
     var method: Moya.Method {
-        switch self{
+        switch self {
         case .placeABid , .registerCard , .registerToBid , .createPINForBidder:
             return .post
         case .updateMe:
@@ -430,7 +399,7 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
     }
 
     var sampleData: Data {
-        switch self{
+        switch self {
         case .createPINForBidder:
             return stubbedResponse("CreatePINForBidder")
 
@@ -484,9 +453,7 @@ func stubbedResponse(_ filename: String) -> Data! {
 
 private extension String {
     var URLEscapedString: String {
-        return self.addingPercentEncoding(
-            withAllowedCharacters: CharacterSet.urlHostAllowed
-        )!
+        return self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlHostAllowed)!
     }
 }
 

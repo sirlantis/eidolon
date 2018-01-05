@@ -15,11 +15,7 @@ extension Button {
             self.setTitleColor(.artsyGrayMedium(), for: .disabled)
             self.setBackgroundColor(.white, for: .disabled, animated: true)
             self.setTitle(originalTitle, for: .disabled)
-            self.setBorderColor(
-                .artsyGrayMedium(),
-                for: .disabled,
-                animated: true
-            )
+            self.setBorderColor(.artsyGrayMedium(), for: .disabled, animated: true)
         }
     }
 }

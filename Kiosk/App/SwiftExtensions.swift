@@ -2,7 +2,7 @@ import RxOptional
 
 extension Optional {
     var hasValue: Bool {
-        switch self{
+        switch self {
         case .none:
             return false
         case .some(_):
@@ -25,7 +25,7 @@ extension String {
 // We're relying on the RxOptional pod to provide the Occupiable protocol.
 extension Optional where Wrapped: Occupiable {
     var isNilOrEmpty: Bool {
-        switch self{
+        switch self {
         case .none:
             return true
         case .some(let value):

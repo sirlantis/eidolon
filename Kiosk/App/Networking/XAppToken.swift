@@ -39,9 +39,7 @@ struct XAppToken {
 
     var expiry: Date? {
         get {
-            return defaults.object(
-                forKey: DefaultsKeys.TokenExpiry.rawValue
-            ) as? Date
+            return defaults.object(forKey: DefaultsKeys.TokenExpiry.rawValue) as? Date
         }
         set(newExpiry) {
             defaults.set(newExpiry, forKey: DefaultsKeys.TokenExpiry.rawValue)

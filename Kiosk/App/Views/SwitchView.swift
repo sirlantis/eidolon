@@ -55,12 +55,7 @@ class SwitchView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        var rect = CGRect(
-            x: 0,
-            y: 0,
-            width: layer.bounds.width,
-            height: SwitchViewBorderWidth
-        )
+        var rect = CGRect(x: 0, y: 0, width: layer.bounds.width, height: SwitchViewBorderWidth)
         topBar.frame = rect
         rect.origin.y = layer.bounds.height - SwitchViewBorderWidth
         bottomBar.frame = rect
@@ -152,16 +147,11 @@ private extension SwitchView {
         bottomSelectionIndicator.constrainHeight("\(SwitchViewBorderWidth)")
 
         addSubview(selectionIndicator)
-        selectionIndicator.constrainWidth(
-            to: self,
-            predicate: widthPredicateMultiplier
-        )
+        selectionIndicator.constrainWidth(to: self, predicate: widthPredicateMultiplier)
         selectionIndicator.alignTop("0", bottom: "0", to: self)
 
-        selectionConstraint = selectionIndicator.alignLeadingEdge(
-            with: self,
-            predicate: nil
-        ).last! as! NSLayoutConstraint
+        selectionConstraint = selectionIndicator.alignLeadingEdge(with: self, predicate: nil).last!
+            as! NSLayoutConstraint
     }
 
     func widthMultiplier() -> Float {
@@ -180,9 +170,7 @@ private extension SwitchView {
         ) {
             let button = self.buttons[index]
 
-            self.buttons.forEach { (button: UIButton) in
-                button.isEnabled = true
-            }
+            self.buttons.forEach { (button: UIButton) in button.isEnabled = true }
 
             button.isEnabled = false
 

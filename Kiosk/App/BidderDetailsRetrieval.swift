@@ -4,13 +4,9 @@ import SVProgressHUD
 import Action
 
 extension UIViewController {
-    func promptForBidderDetailsRetrieval(
-        provider: Networking
-    ) -> Observable<Void> {
+    func promptForBidderDetailsRetrieval(provider: Networking) -> Observable<Void> {
         return Observable.deferred { () -> Observable<Void> in
-            let alertController = self.emailPromptAlertController(
-                provider: provider
-            )
+            let alertController = self.emailPromptAlertController(provider: provider)
 
             self.present(alertController, animated: true) { }
 
@@ -18,10 +14,7 @@ extension UIViewController {
         }
     }
 
-    func retrieveBidderDetails(
-        provider: Networking,
-        email: String
-    ) -> Observable<Void> {
+    func retrieveBidderDetails(provider: Networking, email: String) -> Observable<Void> {
         return Observable
             .just(email)
             .take(1)
@@ -58,9 +51,7 @@ extension UIViewController {
             )
     }
 
-    func emailPromptAlertController(
-        provider: Networking
-    ) -> UIAlertController {
+    func emailPromptAlertController(provider: Networking) -> UIAlertController {
         let alertController = UIAlertController(
             title: "Send Bidder Details",
             message: "Enter your email address or phone number registered with Artsy and we will send your bidder number and PIN.",
@@ -102,9 +93,7 @@ extension UIAlertController {
             message: "Email was not recognized. You may not be registered to bid yet.",
             preferredStyle: .alert
         )
-        alertController.addAction(
-            UIAlertAction.Action("Cancel", style: .cancel)
-        )
+        alertController.addAction(UIAlertAction.Action("Cancel", style: .cancel))
 
         var retryAction = UIAlertAction.Action("Retry", style: .default)
         retryAction.rx.action = appDelegate().requestBidderDetailsCommand()

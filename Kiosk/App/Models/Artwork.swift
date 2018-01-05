@@ -69,21 +69,15 @@ final class Artwork: NSObject, JSONAbleType {
         artwork.medium = json["medium"].string
         artwork.blurb = json["blurb"].string
 
-        if
-            let artistDictionary =
-                json["artist"].object as? [String: AnyObject] {
+        if let artistDictionary = json["artist"].object as? [String: AnyObject] {
             artwork.artists = [Artist.fromJSON(artistDictionary)]
         }
 
-        if
-            let imageDicts = json["images"].object as? Array<Dictionary<String,
-            AnyObject>> {
+        if let imageDicts = json["images"].object as? Array<Dictionary<String, AnyObject>> {
             // There's a possibility that image_versions comes back as null from the API, which fromJSON() is allergic to.
             artwork.images = imageDicts
                 .filter { dict -> Bool in
-                    let imageVersions = (
-                        dict["image_versions"] as? [String]
-                    ) ?? []
+                    let imageVersions = (dict["image_versions"] as? [String]) ?? []
                     return imageVersions.count > 0
                 }
                 .map {

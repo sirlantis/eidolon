@@ -58,15 +58,10 @@ final class SaleArtwork: NSObject, JSONAbleType {
         let artworkDict = json["artwork"].object as! [String: AnyObject]
         let artwork = Artwork.fromJSON(artworkDict)
 
-        let saleArtwork = SaleArtwork(
-            id: id,
-            artwork: artwork,
-            currencySymbol: currencySymbol
-        ) as SaleArtwork
+        let saleArtwork = SaleArtwork(id: id, artwork: artwork, currencySymbol: currencySymbol)
+            as SaleArtwork
 
-        if
-            let highestBidDict =
-                json["highest_bid"].object as? [String: AnyObject] {
+        if let highestBidDict = json["highest_bid"].object as? [String: AnyObject] {
             saleArtwork.saleHighestBid = Bid.fromJSON(highestBidDict)
         }
 

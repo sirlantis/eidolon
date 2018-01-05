@@ -16,17 +16,11 @@ class AdminLogViewController: UIViewController {
     }
 
     func logPath() -> URL {
-        let docs = FileManager.default.urls(
-            for: .documentDirectory,
-            in: .userDomainMask
-        ).last!
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
         return docs.appendingPathComponent("logger.txt")
     }
 
     @IBAction func scrollTapped(_ sender: AnyObject) {
-        textView.scrollRangeToVisible(NSMakeRange(
-            textView.text.characters.count - 1,
-            1
-        ))
+        textView.scrollRangeToVisible(NSMakeRange(textView.text.characters.count - 1, 1))
     }
 }

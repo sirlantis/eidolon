@@ -9,9 +9,7 @@ extension Observable {
         return self.do(onError: { e in
             let error = e as NSError
             logger.log(message)
-            logger.log(
-                "Error: \(error.localizedDescription). \n \(error.artsyServerError())"
-            )
+            logger.log("Error: \(error.localizedDescription). \n \(error.artsyServerError())")
         })
     }
 

@@ -21,11 +21,6 @@ final class Bidder: NSObject, JSONAbleType {
         let saleID = json["sale"]["id"].stringValue
         let createdByAdmin = json["created_by_admin"].bool ?? false
         let pin = json["pin"].stringValue
-        return Bidder(
-            id: id,
-            saleID: saleID,
-            createdByAdmin: createdByAdmin,
-            pin: pin
-        )
+        return Bidder(id: id, saleID: saleID, createdByAdmin: createdByAdmin, pin: pin)
     }
 }

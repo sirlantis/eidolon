@@ -35,9 +35,7 @@ final class Sale: NSObject, JSONAbleType {
 
         let id = json["id"].stringValue
         let isAuction = json["is_auction"].boolValue
-        let startDate = KioskDateFormatter.fromString(
-            json["start_at"].stringValue
-        )!
+        let startDate = KioskDateFormatter.fromString(json["start_at"].stringValue)!
         let endDate = KioskDateFormatter.fromString(json["end_at"].stringValue)
         let name = json["name"].stringValue
         let artworkCount = json["eligible_sale_artworks_count"].intValue
@@ -53,9 +51,7 @@ final class Sale: NSObject, JSONAbleType {
             state: state
         )
 
-        if
-            let buyersPremiumDict =
-                json["buyers_premium"].object as? [String: AnyObject] {
+        if let buyersPremiumDict = json["buyers_premium"].object as? [String: AnyObject] {
             sale.buyersPremium = BuyersPremium.fromJSON(buyersPremiumDict)
         }
 
@@ -69,8 +65,8 @@ final class Sale: NSObject, JSONAbleType {
             // So we'll say any live sale is "not active"
             return false
         }
-        return (now as NSDate).earlierDate(startDate) == startDate && (
-            now as NSDate
-        ).laterDate(endDate) == endDate
+        return (now as NSDate).earlierDate(startDate) == startDate && (now as NSDate).laterDate(
+            endDate
+        ) == endDate
     }
 }

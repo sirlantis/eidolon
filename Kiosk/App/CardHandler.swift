@@ -23,11 +23,7 @@ class CardHandler: NSObject, CFTReaderDelegate {
 
         super.init()
 
-        sessionManager.setApiToken(
-            APIKey,
-            accountToken: APIToken,
-            completed: nil
-        )
+        sessionManager.setApiToken(APIKey, accountToken: APIToken, completed: nil)
     }
 
     func startSearching() {
@@ -56,9 +52,7 @@ class CardHandler: NSObject, CFTReaderDelegate {
 
                 },
                 failure: { [weak self] error in
-                    self?._cardStatus.onNext(
-                        "Card Flight Error: \(String(describing: error))"
-                    )
+                    self?._cardStatus.onNext("Card Flight Error: \(String(describing: error))")
                     logger.log("Card was not tokenizable")
                 }
             )
@@ -72,9 +66,7 @@ class CardHandler: NSObject, CFTReaderDelegate {
     }
 
     func transactionResult(_ charge: CFTCharge!, withError error: Error!) {
-        logger.log(
-            "Unexcepted call to transactionResult callback: \(charge)\n\(error)"
-        )
+        logger.log("Unexcepted call to transactionResult callback: \(charge)\n\(error)")
     }
 
     // handle other delegate call backs with the status messages
@@ -108,9 +100,7 @@ class CardHandler: NSObject, CFTReaderDelegate {
             reader.beginSwipe()
         } else {
             if (error != nil) {
-                _cardStatus.onNext(
-                    "Reader is disconnected: \(error.localizedDescription)"
-                )
+                _cardStatus.onNext("Reader is disconnected: \(error.localizedDescription)")
             } else {
                 _cardStatus.onNext("Reader is disconnected")
             }

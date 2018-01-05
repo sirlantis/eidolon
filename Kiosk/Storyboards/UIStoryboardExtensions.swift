@@ -7,17 +7,12 @@ extension UIStoryboard {
     }
 
     class func fulfillment() -> UIStoryboard {
-        return UIStoryboard(
-            name: StoryboardNames.Fulfillment.rawValue,
-            bundle: nil
-        )
+        return UIStoryboard(name: StoryboardNames.Fulfillment.rawValue, bundle: nil)
     }
 
     func viewController(
         withID identifier: ViewControllerStoryboardIdentifier
     ) -> UIViewController {
-        return self.instantiateViewController(
-            withIdentifier: identifier.rawValue
-        )
+        return self.instantiateViewController(withIdentifier: identifier.rawValue)
     }
 }

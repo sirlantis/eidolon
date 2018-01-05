@@ -20,9 +20,7 @@ extension Observable {
     //
     // Still not sure if this is a good idea.
 
-    func flatMapTo<R>(
-        _ selector: @escaping (Element) -> () -> Observable<R>
-    ) -> Observable<R> {
+    func flatMapTo<R>(_ selector: @escaping (Element) -> () -> Observable<R>) -> Observable<R> {
         return self.map { s -> Observable<R> in
             return selector(s)()
         }.switchLatest()
@@ -39,9 +37,7 @@ extension Observable {
     }
 
     func dispatchAsyncMainScheduler() -> Observable<E> {
-        return self.observeOn(backgroundScheduler).observeOn(
-            MainScheduler.instance
-        )
+        return self.observeOn(backgroundScheduler).observeOn(MainScheduler.instance)
     }
 }
 
@@ -65,8 +61,7 @@ extension Observable where Element: BooleanType {
     }
 }
 
-extension Collection where
-        Iterator.Element: ObservableType, Iterator.Element.E: BooleanType {
+extension Collection where Iterator.Element: ObservableType, Iterator.Element.E: BooleanType {
 
     func combineLatestAnd() -> Observable<Bool> {
         return Observable.combineLatest(self) { bools -> Bool in
@@ -97,9 +92,7 @@ extension ObservableType {
         return then(closure() ?? .empty())
     }
 
-    func then(
-        _ closure: @autoclosure @escaping () -> Observable<E>
-    ) -> Observable<E> {
+    func then(_ closure: @autoclosure @escaping () -> Observable<E>) -> Observable<E> {
         let next = Observable.deferred {
             return closure()
         }

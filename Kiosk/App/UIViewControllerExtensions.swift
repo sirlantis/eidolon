@@ -23,9 +23,7 @@ extension UIViewController {
         return fulfillmentNav().parent as? FulfillmentContainerViewController
     }
 
-    func findChildViewControllerOfType(
-        _ klass: AnyClass
-    ) -> UIViewController? {
+    func findChildViewControllerOfType(_ klass: AnyClass) -> UIViewController? {
         for child in childViewControllers {
             if child.isKind(of: klass) {
                 return child

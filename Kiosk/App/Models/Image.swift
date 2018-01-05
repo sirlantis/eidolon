@@ -89,11 +89,7 @@ final class Image: NSObject, JSONAbleType {
         let preferredVersions = { () -> Array<String> in
             // For very tall images, the "medium" version looks terribad.
             // In the long-term, we have an issue to fix this for good: https://github.com/artsy/eidolon/issues/396
-            if
-                [
-                    "57be35d7a09a6711ab004fa5",
-                    "57be1fb4cd530e65fe000862"
-                ].contains(self.id) {
+            if ["57be35d7a09a6711ab004fa5", "57be1fb4cd530e65fe000862"].contains(self.id) {
                 return ["large", "larger"]
             } else {
                 return ["medium", "large", "larger"]
@@ -107,16 +103,12 @@ final class Image: NSObject, JSONAbleType {
         return urlFromPreferenceList(["larger", "large", "medium"])
     }
 
-    fileprivate func urlFromPreferenceList(
-        _ preferenceList: Array<String>
-    ) -> URL? {
-        if
-            let format = preferenceList.filter({
-                self.imageVersions.contains($0)
-            }).first {
-            let path = NSString(
-                string: self.imageFormatString
-            ).replacingOccurrences(of: ":version", with: format)
+    fileprivate func urlFromPreferenceList(_ preferenceList: Array<String>) -> URL? {
+        if let format = preferenceList.filter({ self.imageVersions.contains($0) }).first {
+            let path = NSString(string: self.imageFormatString).replacingOccurrences(
+                of: ":version",
+                with: format
+            )
             return URL(string: path)
         }
         return nil

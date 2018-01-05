@@ -6,23 +6,18 @@ import RxCocoa
 import NSObject_Rx
 
 class ListingsCollectionViewCell: UICollectionViewCell {
-    typealias DownloadImageClosure = (
-        _ url: URL?,
-        _ imageView: UIImageView
-    ) -> ()
+    typealias DownloadImageClosure = (_ url: URL?, _ imageView: UIImageView) -> ()
     typealias CancelDownloadImageClosure = (
         _ imageView: UIImageView
     ) -> ()
 
     dynamic let lotNumberLabel = ListingsCollectionViewCell._sansSerifLabel()
-    dynamic let artworkImageView =
-        ListingsCollectionViewCell._artworkImageView()
+    dynamic let artworkImageView = ListingsCollectionViewCell._artworkImageView()
     dynamic let artistNameLabel = ListingsCollectionViewCell._largeLabel()
     dynamic let artworkTitleLabel = ListingsCollectionViewCell._italicsLabel()
     dynamic let estimateLabel = ListingsCollectionViewCell._normalLabel()
     dynamic let currentBidLabel = ListingsCollectionViewCell._boldLabel()
-    dynamic let numberOfBidsLabel =
-        ListingsCollectionViewCell._rightAlignedNormalLabel()
+    dynamic let numberOfBidsLabel = ListingsCollectionViewCell._rightAlignedNormalLabel()
     dynamic let bidButton = ListingsCollectionViewCell._bidButton()
     dynamic let moreInfoLabel = ListingsCollectionViewCell._infoLabel()
 
@@ -31,9 +26,7 @@ class ListingsCollectionViewCell: UICollectionViewCell {
     var reuseBag: DisposeBag?
 
     lazy var moreInfo: Observable<Date> = {
-        return Observable
-            .from([self.imageGestureSigal, self.infoGesture])
-            .merge()
+        return Observable.from([self.imageGestureSigal, self.infoGesture]).merge()
     }()
 
     fileprivate lazy var imageGestureSigal: Observable<Date> = {
@@ -162,9 +155,7 @@ class ListingsCollectionViewCell: UICollectionViewCell {
             .addDisposableTo(reuseBag)
 
         bidButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?._bidPressed.onNext(Date())
-            })
+            .subscribe(onNext: { [weak self] in self?._bidPressed.onNext(Date()) })
             .addDisposableTo(reuseBag)
     }
 }

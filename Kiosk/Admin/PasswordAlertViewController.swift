@@ -2,9 +2,7 @@ import UIKit
 
 class PasswordAlertViewController: UIAlertController {
 
-    class func alertView(
-        completion: @escaping () -> ()
-    ) -> PasswordAlertViewController {
+    class func alertView(completion: @escaping () -> ()) -> PasswordAlertViewController {
         let alertController = PasswordAlertViewController(
             title: "Exit Kiosk",
             message: nil,
@@ -21,8 +19,7 @@ class PasswordAlertViewController: UIAlertController {
             exitAction.isEnabled = false
         }
 
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) {
-                _ in }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in }
 
         alertController.addTextField { textField in
             textField.placeholder = "Exit Password"

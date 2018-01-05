@@ -37,9 +37,7 @@ final class User: NSObject, JSONAbleType {
         let phoneNumber = json["phone"].stringValue
 
         var location: Location?
-        if
-            let bidDictionary =
-                json["location"].object as? [String: AnyObject] {
+        if let bidDictionary = json["location"].object as? [String: AnyObject] {
             location = Location.fromJSON(bidDictionary)
         }
 

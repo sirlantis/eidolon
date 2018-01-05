@@ -26,8 +26,7 @@ class ChooseAuctionViewController: UIViewController {
 
                 for i in 0 ..< self.auctions.count {
                     let sale = self.auctions[i]
-                    let title =
-                        " \(sale.name) - #\(sale.auctionState) - \(sale.artworkCount)"
+                    let title = " \(sale.name) - #\(sale.auctionState) - \(sale.artworkCount)"
 
                     let button = ARFlatButton()
                     button.setTitle(title, for: .normal)

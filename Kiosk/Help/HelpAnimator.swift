@@ -15,9 +15,7 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         return AnimationDuration.Normal
     }
 
-    func animateTransition(
-        using transitionContext: UIViewControllerContextTransitioning
-    ) {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
 
         let fromView: UIView! = transitionContext.view(
@@ -27,9 +25,7 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         )!.view
         let toView: UIView! = transitionContext.view(
             forKey: UITransitionContextViewKey.to
-        ) ?? transitionContext.viewController(
-            forKey: UITransitionContextViewControllerKey.to
-        )!.view
+        ) ?? transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!.view
 
         if presenting {
             let toViewController = transitionContext.viewController(
@@ -40,11 +36,7 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             dismissTapGestureRecognizer.rx.event
                 .subscribe(onNext: { [weak toView] sender in
                     let pointInContainer = sender.location(in: toView)
-                    if
-                        toView?.point(
-                            inside: pointInContainer,
-                            with: nil
-                        ) == false {
+                    if toView?.point(inside: pointInContainer, with: nil) == false {
                         appDelegate()
                             .helpButtonCommand()
                             .execute()
@@ -74,9 +66,7 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             UIView.animate(
                 withDuration: transitionDuration(using: transitionContext),
                 animations: {
-                    containerView.removeConstraints(
-                        toViewController.positionConstraints ?? []
-                    )
+                    containerView.removeConstraints(toViewController.positionConstraints ?? [])
                     toViewController.positionConstraints = toView.alignLeading(
                         nil,
                         trailing: "0",
@@ -86,21 +76,15 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
                     fromView.alpha = 0.5
                 },
-                completion: { (value: Bool) in
-                    transitionContext.completeTransition(true)
-                }
+                completion: { (value: Bool) in transitionContext.completeTransition(true) }
             )
         } else {
             let fromViewController = transitionContext.viewController(
                 forKey: UITransitionContextViewControllerKey.from
             )! as! HelpViewController
 
-            if
-                let dismissTapGestureRecognizer =
-                    fromViewController.dismissTapGestureRecognizer {
-                containerView.removeGestureRecognizer(
-                    dismissTapGestureRecognizer
-                )
+            if let dismissTapGestureRecognizer = fromViewController.dismissTapGestureRecognizer {
+                containerView.removeGestureRecognizer(dismissTapGestureRecognizer)
             }
 
             toView.isUserInteractionEnabled = true
@@ -111,9 +95,7 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             UIView.animate(
                 withDuration: self.transitionDuration(using: transitionContext),
                 animations: {
-                    containerView.removeConstraints(
-                        fromViewController.positionConstraints ?? []
-                    )
+                    containerView.removeConstraints(fromViewController.positionConstraints ?? [])
                     fromViewController.positionConstraints = fromView.alignAttribute(
                         .left,
                         to: .right,

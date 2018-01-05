@@ -9,12 +9,9 @@ class OnlineProvider<Target> where Target: Moya.TargetType {
     fileprivate let provider: MoyaProvider<Target>
 
     init(
-        endpointClosure: @escaping MoyaProvider<Target>.EndpointClosure =
-            MoyaProvider.defaultEndpointMapping,
-        requestClosure: @escaping MoyaProvider<Target>.RequestClosure =
-            MoyaProvider.defaultRequestMapping,
-        stubClosure: @escaping MoyaProvider<Target>.StubClosure =
-            MoyaProvider.neverStub,
+        endpointClosure: @escaping MoyaProvider<Target>.EndpointClosure = MoyaProvider.defaultEndpointMapping,
+        requestClosure: @escaping MoyaProvider<Target>.RequestClosure = MoyaProvider.defaultRequestMapping,
+        stubClosure: @escaping MoyaProvider<Target>.StubClosure = MoyaProvider.neverStub,
         manager: Manager = MoyaProvider<Target>.defaultAlamofireManager(),
         plugins: [PluginType] = [],
         trackInflights: Bool = false,
@@ -131,9 +128,7 @@ extension NetworkingType {
         return Networking(provider: newProvider(plugins))
     }
 
-    static func newAuthorizedNetworking(
-        _ xAccessToken: String
-    ) -> AuthorizedNetworking {
+    static func newAuthorizedNetworking(_ xAccessToken: String) -> AuthorizedNetworking {
         return AuthorizedNetworking(provider: newProvider(
             authenticatedPlugins,
             xAccessToken: xAccessToken
@@ -158,32 +153,25 @@ extension NetworkingType {
         ))
     }
 
-    static func endpointsClosure<T>(_ xAccessToken: String? = nil) -> (
-        T
-    ) -> Endpoint<T> where T: TargetType, T: ArtsyAPIType {
+    static func endpointsClosure<T>(_ xAccessToken: String? = nil) -> (T) -> Endpoint<T> where
+            T: TargetType, T: ArtsyAPIType {
         return { target in
             var endpoint: Endpoint<T> = Endpoint<T>(
                 url: url(target),
-                sampleResponseClosure: {
-                    .networkResponse(200, target.sampleData)
-                },
+                sampleResponseClosure: { .networkResponse(200, target.sampleData) },
                 method: target.method,
                 task: target.task
             )
 
             // If we were given an xAccessToken, add it
             if let xAccessToken = xAccessToken {
-                endpoint = endpoint.adding(
-                    newHTTPHeaderFields: ["X-Access-Token": xAccessToken]
-                )
+                endpoint = endpoint.adding(newHTTPHeaderFields: ["X-Access-Token": xAccessToken])
             }
 
             // Sign all non-XApp, non-XAuth token requests
             if target.addXAuth {
                 return endpoint.adding(
-                    newHTTPHeaderFields: [
-                        "X-Xapp-Token": XAppToken().token ?? ""
-                    ]
+                    newHTTPHeaderFields: ["X-Xapp-Token": XAppToken().token ?? ""]
                 )
             } else {
                 return endpoint
@@ -196,41 +184,34 @@ extension NetworkingType {
     }
 
     static var plugins: [PluginType] {
-        return [
-            NetworkLogger(blacklist: { target -> Bool in
-                guard let target = target as? ArtsyAPI else { return false }
+        return [NetworkLogger(blacklist: { target -> Bool in
+            guard let target = target as? ArtsyAPI else { return false }
 
-                switch target{
-                case .ping:
-                    return true
-                default:
-                    return false
-                }
-            })
-        ]
+            switch target {
+            case .ping:
+                return true
+            default:
+                return false
+            }
+        })]
     }
     static var authenticatedPlugins: [PluginType] {
-        return [
-            NetworkLogger(whitelist: { target -> Bool in
-                guard let target = target as? ArtsyAuthenticatedAPI else {
-                    return false
-                }
+        return [NetworkLogger(whitelist: { target -> Bool in
+            guard let target = target as? ArtsyAuthenticatedAPI else { return false }
 
-                switch target{
-                case .myBidPosition:
-                    return true
-                case .findMyBidderRegistration:
-                    return true
-                default:
-                    return false
-                }
-            })
-        ]
+            switch target {
+            case .myBidPosition:
+                return true
+            case .findMyBidderRegistration:
+                return true
+            default:
+                return false
+            }
+        })]
     }
 
     // (Endpoint<Target>, NSURLRequest -> Void) -> Void
-    static func endpointResolver<T>() -> MoyaProvider<T>.RequestClosure where
-            T: TargetType {
+    static func endpointResolver<T>() -> MoyaProvider<T>.RequestClosure where T: TargetType {
         return { endpoint, closure in
             var request = endpoint.urlRequest!
             request.httpShouldHandleCookies = false

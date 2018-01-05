@@ -6,17 +6,12 @@ extension UILabel {
     }
 
     func makeSubstringBold(_ boldText: String) {
-        let attributedText =
-            self.attributedText!.mutableCopy() as! NSMutableAttributedString
+        let attributedText = self.attributedText!.mutableCopy() as! NSMutableAttributedString
 
         let range = ((self.text ?? "") as NSString).range(of: boldText)
         if range.location != NSNotFound {
             attributedText.setAttributes(
-                [
-                    NSFontAttributeName: UIFont.serifSemiBoldFont(
-                        withSize: self.font.pointSize
-                    )
-                ],
+                [NSFontAttributeName: UIFont.serifSemiBoldFont(withSize: self.font.pointSize)],
                 range: range
             )
         }
@@ -29,17 +24,12 @@ extension UILabel {
     }
 
     func makeSubstringItalic(_ italicText: String) {
-        let attributedText =
-            self.attributedText!.mutableCopy() as! NSMutableAttributedString
+        let attributedText = self.attributedText!.mutableCopy() as! NSMutableAttributedString
 
         let range = ((self.text ?? "") as NSString).range(of: italicText)
         if range.location != NSNotFound {
             attributedText.setAttributes(
-                [
-                    NSFontAttributeName: UIFont.serifItalicFont(
-                        withSize: self.font.pointSize
-                    )
-                ],
+                [NSFontAttributeName: UIFont.serifItalicFont(withSize: self.font.pointSize)],
                 range: range
             )
         }
@@ -49,8 +39,7 @@ extension UILabel {
 
     func setLineHeight(_ lineHeight: Int) {
         let displayText = text ?? ""
-        let attributedString =
-            self.attributedText!.mutableCopy() as! NSMutableAttributedString
+        let attributedString = self.attributedText!.mutableCopy() as! NSMutableAttributedString
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = CGFloat(lineHeight)
         paragraphStyle.alignment = textAlignment

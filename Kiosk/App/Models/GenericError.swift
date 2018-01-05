@@ -20,10 +20,6 @@ final class GenericError: NSObject, JSONAbleType {
         var detailDictionary = json["detail"].object as? [String: AnyObject]
 
         detailDictionary = detailDictionary ?? [:]
-        return GenericError(
-            type: type,
-            message: message,
-            detail: detailDictionary!
-        )
+        return GenericError(type: type, message: message, detail: detailDictionary!)
     }
 }

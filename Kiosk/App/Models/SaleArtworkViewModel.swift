@@ -23,7 +23,7 @@ extension SaleArtworkViewModel {
             saleArtwork.estimateCents,
             saleArtwork.lowEstimateCents,
             saleArtwork.highEstimateCents
-        ){
+        ) {
         // Default to estimateCents.
         case (.some(let estimateCents), _, _):
             let dollars = centsToPresentableDollarsString(
@@ -90,20 +90,18 @@ extension SaleArtworkViewModel {
         let highestBidString = saleArtwork.rx
             .observe(NSNumber.self, "highestBidCents")
             .map { "\(String(describing: $0))" }
-        let reserveStatus = saleArtwork.rx
-            .observe(String.self, "reserveStatus")
-            .map { input -> String in
-                switch input{
-                case .some(let reserveStatus):
-                    return reserveStatus
-                default:
-                    return ""
-                }
+        let reserveStatus = saleArtwork.rx.observe(String.self, "reserveStatus").map {
+                input -> String in
+            switch input {
+            case .some(let reserveStatus):
+                return reserveStatus
+            default:
+                return ""
             }
+        }
 
-        return Observable.combineLatest(
-            [numberOfBids(), reserveStatus, highestBidString]
-        ) { strings -> String in
+        return Observable.combineLatest([numberOfBids(), reserveStatus, highestBidString]) {
+                strings -> String in
 
             let numberOfBidsString = strings[0]
             let reserveStatus = ReserveStatus.initOrDefault(strings[1])
@@ -126,8 +124,7 @@ extension SaleArtworkViewModel {
     }
 
     func lotLabel() -> Observable<String?> {
-        return saleArtwork.rx.observe(NSString.self, "lotLabel").map {
-                lotLabel in
+        return saleArtwork.rx.observe(NSString.self, "lotLabel").map { lotLabel in
             if let lotLabel = lotLabel {
                 return "Lot \(lotLabel)"
             } else {
@@ -146,10 +143,7 @@ extension SaleArtworkViewModel {
 
     }
 
-    func currentBid(
-        prefix: String = "",
-        missingPrefix: String = ""
-    ) -> Observable<String> {
+    func currentBid(prefix: String = "", missingPrefix: String = "") -> Observable<String> {
         let currencySymbol = saleArtwork.currencySymbol
         return saleArtwork.rx.observe(NSNumber.self, "highestBidCents").map {
                 [weak self] highestBidCents in
@@ -186,12 +180,7 @@ extension SaleArtworkViewModel {
 
                 return (bidCount > 0 ? highestBid : openingBid) ?? 0
             }
-            .map {
-                centsToPresentableDollarsString(
-                    $0,
-                    currencySymbol: currencySymbol
-                )
-            }
+            .map { centsToPresentableDollarsString($0, currencySymbol: currencySymbol) }
     }
 
     func currentBidOrOpeningBidLabel() -> Observable<String> {

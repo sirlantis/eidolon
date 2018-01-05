@@ -22,16 +22,10 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
 
     lazy var apiPinger: Observable<Bool> = { self._apiPinger.letOnline }()
 
-    var registerToBidCommand = { () -> CocoaAction in
-        appDelegate().registerToBidCommand()
-    }
+    var registerToBidCommand = { () -> CocoaAction in appDelegate().registerToBidCommand() }
 
-    class func instantiate(
-        from storyboard: UIStoryboard
-    ) -> AppViewController {
-        return storyboard.viewController(
-            withID: .AppViewController
-        ) as! AppViewController
+    class func instantiate(from storyboard: UIStoryboard) -> AppViewController {
+        return storyboard.viewController(withID: .AppViewController) as! AppViewController
     }
 
     var sale = Variable(Sale(
@@ -52,9 +46,7 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
         countdownManager.setFonts()
         countdownManager.provider = provider
 
-        reachability
-            .bindTo(offlineBlockingView.rx_hidden)
-            .addDisposableTo(rx_disposeBag)
+        reachability.bindTo(offlineBlockingView.rx_hidden).addDisposableTo(rx_disposeBag)
 
         auctionRequest(provider, auctionID: auctionID)
             .bindTo(sale)
@@ -75,14 +67,11 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // This is the embed segue
-        guard
-            let navigationController =
-                segue.destination as? UINavigationController
-        else { return }
-        guard
-            let listingsViewController =
-                navigationController.topViewController as? ListingsViewController
-        else { return }
+        guard let navigationController = segue.destination as? UINavigationController else {
+            return
+        }
+        guard let listingsViewController = navigationController.topViewController
+                as? ListingsViewController else { return }
 
         listingsViewController.provider = provider
     }
@@ -116,13 +105,8 @@ extension AppViewController {
         self.present(passwordVC, animated: true) { }
     }
 
-    func auctionRequest(
-        _ provider: Networking,
-        auctionID: String
-    ) -> Observable<Sale> {
-        let auctionEndpoint: ArtsyAPI = ArtsyAPI.auctionInfo(
-            auctionID: auctionID
-        )
+    func auctionRequest(_ provider: Networking, auctionID: String) -> Observable<Sale> {
+        let auctionEndpoint: ArtsyAPI = ArtsyAPI.auctionInfo(auctionID: auctionID)
 
         return provider
             .request(auctionEndpoint)
