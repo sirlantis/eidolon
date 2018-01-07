@@ -5,9 +5,9 @@ class AdminLogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.text = try? NSString(
-            contentsOf: logPath(),
-            encoding: String.Encoding.ascii.rawValue
-        ) as String
+                contentsOf: logPath(),
+                encoding: String.Encoding.ascii.rawValue
+            ) as String
     }
 
     @IBOutlet weak var textView: UITextView!

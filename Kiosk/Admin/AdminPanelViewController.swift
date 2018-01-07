@@ -40,7 +40,8 @@ class AdminPanelViewController: UIViewController {
             auctionIDLabel.text = "STUBBING API RESPONSES\nNOT CONTACTING ARTSY API"
         } else {
             let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
-                as? String) ?? "Unknown"
+                    as? String)
+                ?? "Unknown"
             auctionIDLabel.text = "\(state.auctionID), Kiosk version: \(version)"
         }
 

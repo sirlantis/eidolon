@@ -18,8 +18,8 @@ extension AppDelegate {
 
     internal var appViewController: AppViewController! {
         let nav = self.window?.rootViewController?.findChildViewControllerOfType(
-            UINavigationController.self
-        ) as? UINavigationController
+                UINavigationController.self
+            ) as? UINavigationController
         return nav?.delegate as? AppViewController
     }
 
@@ -110,9 +110,8 @@ extension AppDelegate {
     func ensureAction(action: CocoaAction) -> CocoaAction {
         retainedAction = action
         let action = CocoaAction { input -> Observable<Void> in
-            return retainedAction?
-                .execute(input)
-                .do(onCompleted: { retainedAction = nil }) ?? Observable.just(Void())
+            return retainedAction?.execute(input).do(onCompleted: { retainedAction = nil })
+                ?? Observable.just(Void())
         }
 
         return action
@@ -282,7 +281,8 @@ private extension AppDelegate {
             return Observable.create { observer in
                 observer.onNext(
                     (self.appViewController.presentedViewController
-                        as? FulfillmentContainerViewController) != nil
+                            as? FulfillmentContainerViewController)
+                        != nil
                 )
                 observer.onCompleted()
 

@@ -4,9 +4,7 @@ import Moya
 import Alamofire
 
 protocol ArtsyAPIType {
-    var addXAuth: Bool {
-        get
-    }
+    var addXAuth: Bool { get }
 }
 
 enum ArtsyAPI {

@@ -18,19 +18,19 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
 
-        let fromView: UIView! = transitionContext.view(
-            forKey: UITransitionContextViewKey.from
-        ) ?? transitionContext.viewController(
-            forKey: UITransitionContextViewControllerKey.from
-        )!.view
-        let toView: UIView! = transitionContext.view(
-            forKey: UITransitionContextViewKey.to
-        ) ?? transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!.view
+        let fromView: UIView! = transitionContext.view(forKey: UITransitionContextViewKey.from)
+            ?? transitionContext.viewController(
+                forKey: UITransitionContextViewControllerKey.from
+            )!.view
+        let toView: UIView! = transitionContext.view(forKey: UITransitionContextViewKey.to)
+            ?? transitionContext.viewController(
+                forKey: UITransitionContextViewControllerKey.to
+            )!.view
 
         if presenting {
             let toViewController = transitionContext.viewController(
-                forKey: UITransitionContextViewControllerKey.to
-            )! as! HelpViewController
+                    forKey: UITransitionContextViewControllerKey.to
+                )! as! HelpViewController
 
             let dismissTapGestureRecognizer = UITapGestureRecognizer()
             dismissTapGestureRecognizer.rx.event
@@ -56,11 +56,11 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             toView.alignTop("0", bottom: "0", to: containerView)
             toView.constrainWidth("\(HelpViewController.width)")
             toViewController.positionConstraints = toView.alignAttribute(
-                .left,
-                to: .right,
-                of: containerView,
-                predicate: "0"
-            ) as? [NSLayoutConstraint]
+                    .left,
+                    to: .right,
+                    of: containerView,
+                    predicate: "0"
+                ) as? [NSLayoutConstraint]
             containerView.layoutIfNeeded()
 
             UIView.animate(
@@ -68,10 +68,10 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 animations: {
                     containerView.removeConstraints(toViewController.positionConstraints ?? [])
                     toViewController.positionConstraints = toView.alignLeading(
-                        nil,
-                        trailing: "0",
-                        to: containerView
-                    ) as? [NSLayoutConstraint]
+                            nil,
+                            trailing: "0",
+                            to: containerView
+                        ) as? [NSLayoutConstraint]
                     containerView.layoutIfNeeded()
 
                     fromView.alpha = 0.5
@@ -80,8 +80,8 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             )
         } else {
             let fromViewController = transitionContext.viewController(
-                forKey: UITransitionContextViewControllerKey.from
-            )! as! HelpViewController
+                    forKey: UITransitionContextViewControllerKey.from
+                )! as! HelpViewController
 
             if let dismissTapGestureRecognizer = fromViewController.dismissTapGestureRecognizer {
                 containerView.removeGestureRecognizer(dismissTapGestureRecognizer)
@@ -97,11 +97,11 @@ class HelpAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 animations: {
                     containerView.removeConstraints(fromViewController.positionConstraints ?? [])
                     fromViewController.positionConstraints = fromView.alignAttribute(
-                        .left,
-                        to: .right,
-                        of: containerView,
-                        predicate: "0"
-                    ) as? [NSLayoutConstraint]
+                            .left,
+                            to: .right,
+                            of: containerView,
+                            predicate: "0"
+                        ) as? [NSLayoutConstraint]
                     containerView.layoutIfNeeded()
 
                     toView.alpha = 1.0

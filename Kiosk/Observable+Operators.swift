@@ -42,9 +42,7 @@ extension Observable {
 }
 
 protocol BooleanType {
-    var boolValue: Bool {
-        get
-    }
+    var boolValue: Bool { get }
 }
 extension Bool: BooleanType {
     var boolValue: Bool {

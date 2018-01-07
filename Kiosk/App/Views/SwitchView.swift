@@ -181,9 +181,9 @@ private extension SwitchView {
             // It's illegal to have a multiplier of zero, so if we're at index zero, we .just stick to the left side.
             if multiplier == 0 {
                 self.selectionConstraint = self.selectionIndicator.alignLeadingEdge(
-                    with: self,
-                    predicate: nil
-                ).last! as! NSLayoutConstraint
+                        with: self,
+                        predicate: nil
+                    ).last! as! NSLayoutConstraint
             } else {
                 self.selectionConstraint = NSLayoutConstraint(
                     item: self.selectionIndicator,

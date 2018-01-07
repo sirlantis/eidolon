@@ -44,9 +44,7 @@ class OnlineProvider<Target> where Target: Moya.TargetType {
 
 protocol NetworkingType {
     associatedtype T: TargetType, ArtsyAPIType
-    var provider: OnlineProvider<T> {
-        get
-    }
+    var provider: OnlineProvider<T> { get }
 }
 
 struct Networking: NetworkingType {
