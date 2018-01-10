@@ -281,8 +281,7 @@ private extension AppDelegate {
             return Observable.create { observer in
                 observer.onNext(
                     (self.appViewController.presentedViewController
-                            as? FulfillmentContainerViewController)
-                        != nil
+                            as? FulfillmentContainerViewController) != nil
                 )
                 observer.onCompleted()
 

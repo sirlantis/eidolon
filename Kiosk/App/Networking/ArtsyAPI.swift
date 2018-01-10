@@ -10,8 +10,7 @@ protocol ArtsyAPIType {
 enum ArtsyAPI {
     case xApp
     case xAuth(email: String, password: String)
-    case trustToken(number: String,
-    auctionPIN: String)
+    case trustToken(number: String, auctionPIN: String)
 
     case systemTime
     case ping
@@ -26,14 +25,9 @@ enum ArtsyAPI {
     case findBidderRegistration(auctionID: String, phone: String)
     case activeAuctions
 
-    case createUser(email: String,
-    password: String,
-    phone: String,
-    postCode: String,
-    name: String)
+    case createUser(email: String, password: String, phone: String, postCode: String, name: String)
 
-    case bidderDetailsNotification(auctionID: String,
-    identifier: String)
+    case bidderDetailsNotification(auctionID: String, identifier: String)
 
     case lostPasswordNotification(email: String)
     case findExistingEmailRegistration(email: String)
@@ -47,9 +41,7 @@ enum ArtsyAuthenticatedAPI {
     case myBidPositionsForAuctionArtwork(auctionID: String, artworkID: String)
     case myBidPosition(id: String)
     case findMyBidderRegistration(auctionID: String)
-    case placeABid(auctionID: String,
-    artworkID: String,
-    maxBidCents: String)
+    case placeABid(auctionID: String, artworkID: String, maxBidCents: String)
 
     case updateMe(email: String, phone: String, postCode: String, name: String)
     case registerCard(stripeToken: String, swiped: Bool)
@@ -197,7 +189,7 @@ extension ArtsyAPI: TargetType, ArtsyAPIType {
 
     var method: Moya.Method {
         switch self {
-        case .lostPasswordNotification , .createUser:
+        case .lostPasswordNotification, .createUser:
             return .post
         case .findExistingEmailRegistration:
             return .head
@@ -387,7 +379,7 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
 
     var method: Moya.Method {
         switch self {
-        case .placeABid , .registerCard , .registerToBid , .createPINForBidder:
+        case .placeABid, .registerCard, .registerToBid, .createPINForBidder:
             return .post
         case .updateMe:
             return .put
@@ -442,7 +434,7 @@ extension ArtsyAuthenticatedAPI: TargetType, ArtsyAPIType {
 // MARK: - Provider support
 
 func stubbedResponse(_ filename: String) -> Data! {
-    @objc class TestClass: NSObject {}
+    @objc class TestClass: NSObject { }
 
     let bundle = Bundle(for: TestClass.self)
     let path = bundle.path(forResource: filename, ofType: "json")

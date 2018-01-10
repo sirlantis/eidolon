@@ -151,8 +151,8 @@ extension NetworkingType {
         ))
     }
 
-    static func endpointsClosure<T>(_ xAccessToken: String? = nil) -> (T) -> Endpoint<T> where
-            T: TargetType, T: ArtsyAPIType {
+    static func endpointsClosure<T>(_ xAccessToken: String? = nil) -> (T) -> Endpoint<T>
+        where T: TargetType, T: ArtsyAPIType {
         return { target in
             var endpoint: Endpoint<T> = Endpoint<T>(
                 url: url(target),
@@ -168,9 +168,9 @@ extension NetworkingType {
 
             // Sign all non-XApp, non-XAuth token requests
             if target.addXAuth {
-                return endpoint.adding(
-                    newHTTPHeaderFields: ["X-Xapp-Token": XAppToken().token ?? ""]
-                )
+                return endpoint.adding(newHTTPHeaderFields: [
+                    "X-Xapp-Token": XAppToken().token ?? ""
+                ])
             } else {
                 return endpoint
             }

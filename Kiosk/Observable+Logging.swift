@@ -2,7 +2,9 @@ import RxSwift
 
 extension Observable {
     func logError(prefix: String = "Error: ") -> Observable<Element> {
-        return self.do(onError: { error in print("\(prefix)\(error)") })
+        return self.do(onError: { error in
+            print("\(prefix)\(error)")
+        })
     }
 
     func logServerError(message: String) -> Observable<Element> {
@@ -14,6 +16,8 @@ extension Observable {
     }
 
     func logNext() -> Observable<Element> {
-        return self.do(onNext: { element in print("\(element)") })
+        return self.do(onNext: { element in
+            print("\(element)")
+        })
     }
 }

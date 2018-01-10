@@ -10,9 +10,7 @@ private func alertController(_ message: String, title: String) -> UIAlertControl
 }
 
 extension UIView {
-    typealias PresentAlertClosure = (
-        _ alertController: UIAlertController
-    ) -> Void
+    typealias PresentAlertClosure = (_ alertController: UIAlertController) -> Void
 
     func presentOnLongPress(
         _ message: String,

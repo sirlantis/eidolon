@@ -4,7 +4,7 @@ import RxSwift
 class SystemTime {
     var systemTimeInterval: TimeInterval? = nil
 
-    init() {}
+    init() { }
 
     func sync(_ provider: Networking) -> Observable<Void> {
         let endpoint: ArtsyAPI = ArtsyAPI.systemTime

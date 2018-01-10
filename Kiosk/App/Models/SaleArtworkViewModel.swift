@@ -23,8 +23,8 @@ extension SaleArtworkViewModel {
             saleArtwork.estimateCents,
             saleArtwork.lowEstimateCents,
             saleArtwork.highEstimateCents
-        ) {
-        // Default to estimateCents.
+        ) { // Default to estimateCents.
+
         case (.some(let estimateCents), _, _):
             let dollars = centsToPresentableDollarsString(
                 estimateCents,

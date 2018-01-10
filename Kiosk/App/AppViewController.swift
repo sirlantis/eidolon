@@ -20,7 +20,9 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
         [connectedToInternetOrStubbing(), self.apiPinger].combineLatestAnd()
     }()
 
-    lazy var apiPinger: Observable<Bool> = { self._apiPinger.letOnline }()
+    lazy var apiPinger: Observable<Bool> = {
+        self._apiPinger.letOnline
+    }()
 
     var registerToBidCommand = { () -> CocoaAction in appDelegate().registerToBidCommand() }
 

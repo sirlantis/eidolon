@@ -5,7 +5,8 @@ import RxSwift
 import Keys
 import Stripe
 
-@UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let helpViewController = Variable<HelpViewController?>(nil)
     var helpButton: UIButton!
@@ -62,13 +63,11 @@ import Stripe
             Stripe.setDefaultPublishableKey(keys.stripeProductionPublishableKey)
         }
 
-        ARAnalytics.setup(
-            withAnalytics: [
-                ARHockeyAppBetaID: keys.hockeyBetaSecret,
-                ARHockeyAppLiveID: keys.hockeyProductionSecret,
-                ARSegmentioWriteKey: keys.segmentWriteKey
-            ]
-        )
+        ARAnalytics.setup(withAnalytics: [
+            ARHockeyAppBetaID: keys.hockeyBetaSecret,
+            ARHockeyAppLiveID: keys.hockeyProductionSecret,
+            ARSegmentioWriteKey: keys.segmentWriteKey
+        ])
 
         setupHelpButton()
         setupUserAgent()

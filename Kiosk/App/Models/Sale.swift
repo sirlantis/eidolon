@@ -65,9 +65,7 @@ final class Sale: NSObject, JSONAbleType {
             // So we'll say any live sale is "not active"
             return false
         }
-        return (now as NSDate).earlierDate(startDate)
-            == startDate
-            && (now as NSDate).laterDate(endDate)
-            == endDate
+        return (now as NSDate).earlierDate(startDate) == startDate
+            && (now as NSDate).laterDate(endDate) == endDate
     }
 }

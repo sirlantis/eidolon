@@ -5,9 +5,7 @@ import Result
 /// Logs network activity (outgoing requests and incoming responses).
 class NetworkLogger: PluginType {
 
-    typealias Comparison = (
-        TargetType
-    ) -> Bool
+    typealias Comparison = (TargetType) -> Bool
 
     let whitelist: Comparison
     let blacklist: Comparison

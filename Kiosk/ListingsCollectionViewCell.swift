@@ -7,9 +7,7 @@ import NSObject_Rx
 
 class ListingsCollectionViewCell: UICollectionViewCell {
     typealias DownloadImageClosure = (_ url: URL?, _ imageView: UIImageView) -> ()
-    typealias CancelDownloadImageClosure = (
-        _ imageView: UIImageView
-    ) -> ()
+    typealias CancelDownloadImageClosure = (_ imageView: UIImageView) -> ()
 
     dynamic let lotNumberLabel = ListingsCollectionViewCell._sansSerifLabel()
     dynamic let artworkImageView = ListingsCollectionViewCell._artworkImageView()
@@ -145,7 +143,9 @@ class ListingsCollectionViewCell: UICollectionViewCell {
 
         viewModel
             .flatMapTo(SaleArtworkViewModel.forSale)
-            .map { forSale in (forSale ? "BID" : "SOLD") }
+            .map { forSale in
+                (forSale ? "BID" : "SOLD")
+            }
             .bindTo(bidButton.rx.title())
             .addDisposableTo(reuseBag)
 
