@@ -7,17 +7,25 @@ import Stripe
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+
     let helpViewController = Variable<HelpViewController?>(nil)
     var helpButton: UIButton!
 
     weak var webViewController: UIViewController?
 
-    var window: UIWindow? = UIWindow(frame:CGRect(x: 0, y: 0, width: UIScreen.main.bounds.height, height: UIScreen.main.bounds.width))
+    var window: UIWindow? = UIWindow(frame: CGRect(
+        x: 0,
+        y: 0,
+        width: UIScreen.main.bounds.height,
+        height: UIScreen.main.bounds.width
+    ))
 
     fileprivate(set) var provider = Networking.newDefaultNetworking()
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
+    ) -> Bool {
 
         // Disable sleep timer
         UIApplication.shared.isIdleTimerDisabled = true
@@ -27,11 +35,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             provider = Networking.newStubbingNetworking()
         }
 
-
         // I couldn't figure how to swizzle this out like we do in objc.
-        if let _ = NSClassFromString("XCTest") { return true }
+        if let _ = NSClassFromString("XCTest") {
+            return true
+        }
 
-        // Clear possible old contents from cache and defaults. 
+        // Clear possible old contents from cache and defaults.
         let imageCache = SDImageCache.shared()
         imageCache?.clearDisk()
 
@@ -40,7 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         defaults.removeObject(forKey: XAppToken.DefaultsKeys.TokenExpiry.rawValue)
 
         let auctionStoryboard = UIStoryboard.auction()
-        let appViewController = auctionStoryboard.instantiateInitialViewController() as? AppViewController
+        let appViewController = auctionStoryboard.instantiateInitialViewController()
+            as? AppViewController
         appViewController?.provider = provider
         window?.rootViewController = appViewController
         window?.makeKeyAndVisible()
@@ -70,10 +80,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupUserAgent() {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String?
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as! String?
-        
+
         let webView = UIWebView(frame: CGRect.zero)
         let oldAgent = webView.stringByEvaluatingJavaScript(from: "navigator.userAgent")
-        
+
         let agentString = "\(String(describing: oldAgent)) Artsy-Mobile/\(version!) Eigen/\(build!) Kiosk Eidolon"
 
         let defaults = UserDefaults.standard

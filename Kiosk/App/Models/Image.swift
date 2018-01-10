@@ -15,7 +15,19 @@ final class Image: NSObject, JSONAbleType {
     let maxLevel: Int
     let isDefault: Bool
 
-    init(id: String, imageFormatString: String, imageVersions: [String], imageSize: CGSize, aspectRatio: CGFloat?, baseURL: String, tileSize: Int, maxTiledHeight: Int, maxTiledWidth: Int, maxLevel: Int, isDefault: Bool) {
+    init(
+        id: String,
+        imageFormatString: String,
+        imageVersions: [String],
+        imageSize: CGSize,
+        aspectRatio: CGFloat?,
+        baseURL: String,
+        tileSize: Int,
+        maxTiledHeight: Int,
+        maxTiledWidth: Int,
+        maxLevel: Int,
+        isDefault: Bool
+    ) {
         self.id = id
         self.imageFormatString = imageFormatString
         self.imageVersions = imageVersions
@@ -29,13 +41,16 @@ final class Image: NSObject, JSONAbleType {
         self.isDefault = isDefault
     }
 
-    static func fromJSON(_ json:[String: Any]) -> Image {
+    static func fromJSON(_ json: [String: Any]) -> Image {
         let json = JSON(json)
 
         let id = json["id"].stringValue
         let imageFormatString = json["image_url"].stringValue
         let imageVersions = (json["image_versions"].object as? [String]) ?? []
-        let imageSize = CGSize(width: json["original_width"].int ?? 1, height: json["original_height"].int ?? 1)
+        let imageSize = CGSize(
+            width: json["original_width"].int ?? 1,
+            height: json["original_height"].int ?? 1
+        )
         let aspectRatio = { () -> CGFloat? in
             if let aspectRatio = json["aspect_ratio"].float {
                 return CGFloat(aspectRatio)
@@ -49,13 +64,25 @@ final class Image: NSObject, JSONAbleType {
         let maxTiledWidth = json["max_tiled_width"].int ?? 1
         let isDefault = json["is_default"].bool ?? false
 
-        let dimension = max( maxTiledWidth, maxTiledHeight)
-        let logD = logf( Float(dimension) )
+        let dimension = max(maxTiledWidth, maxTiledHeight)
+        let logD = logf(Float(dimension))
         let log2 = Float(logf(2))
-        
-        let maxLevel = Int( ceilf( logD / log2) )
 
-        return Image(id: id, imageFormatString: imageFormatString, imageVersions: imageVersions, imageSize: imageSize, aspectRatio: aspectRatio, baseURL: baseURL, tileSize: tileSize, maxTiledHeight: maxTiledHeight, maxTiledWidth: maxTiledWidth, maxLevel: maxLevel, isDefault: isDefault)
+        let maxLevel = Int(ceilf(logD / log2))
+
+        return Image(
+            id: id,
+            imageFormatString: imageFormatString,
+            imageVersions: imageVersions,
+            imageSize: imageSize,
+            aspectRatio: aspectRatio,
+            baseURL: baseURL,
+            tileSize: tileSize,
+            maxTiledHeight: maxTiledHeight,
+            maxTiledWidth: maxTiledWidth,
+            maxLevel: maxLevel,
+            isDefault: isDefault
+        )
     }
 
     func thumbnailURL() -> URL? {
@@ -78,7 +105,10 @@ final class Image: NSObject, JSONAbleType {
 
     fileprivate func urlFromPreferenceList(_ preferenceList: Array<String>) -> URL? {
         if let format = preferenceList.filter({ self.imageVersions.contains($0) }).first {
-            let path = NSString(string: self.imageFormatString).replacingOccurrences(of: ":version", with: format)
+            let path = NSString(string: self.imageFormatString).replacingOccurrences(
+                of: ":version",
+                with: format
+            )
             return URL(string: path)
         }
         return nil

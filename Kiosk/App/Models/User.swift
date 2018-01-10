@@ -11,8 +11,14 @@ final class User: NSObject, JSONAbleType {
     dynamic var bidder: Bidder?
     dynamic var location: Location?
 
-
-    init(id: String, email: String, name: String, paddleNumber: String, phoneNumber: String, location: Location?) {
+    init(
+        id: String,
+        email: String,
+        name: String,
+        paddleNumber: String,
+        phoneNumber: String,
+        location: Location?
+    ) {
         self.id = id
         self.name = name
         self.paddleNumber = paddleNumber
@@ -20,22 +26,28 @@ final class User: NSObject, JSONAbleType {
         self.phoneNumber = phoneNumber
         self.location = location
     }
-    
+
     static func fromJSON(_ json: [String: Any]) -> User {
         let json = JSON(json)
-        
+
         let id = json["id"].stringValue
         let name = json["name"].stringValue
         let email = json["email"].stringValue
         let paddleNumber = json["paddle_number"].stringValue
         let phoneNumber = json["phone"].stringValue
 
-        var location:Location?
+        var location: Location?
         if let bidDictionary = json["location"].object as? [String: AnyObject] {
             location = Location.fromJSON(bidDictionary)
         }
 
-
-        return User(id: id, email: email, name: name, paddleNumber: paddleNumber, phoneNumber: phoneNumber, location:location)
+        return User(
+            id: id,
+            email: email,
+            name: name,
+            paddleNumber: paddleNumber,
+            phoneNumber: phoneNumber,
+            location: location
+        )
     }
 }

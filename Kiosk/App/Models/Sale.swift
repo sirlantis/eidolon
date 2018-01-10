@@ -12,7 +12,15 @@ final class Sale: NSObject, JSONAbleType {
 
     dynamic var buyersPremium: BuyersPremium?
 
-    init(id: String, name: String, isAuction: Bool, startDate: Date, endDate: Date?, artworkCount: Int, state: String) {
+    init(
+        id: String,
+        name: String,
+        isAuction: Bool,
+        startDate: Date,
+        endDate: Date?,
+        artworkCount: Int,
+        state: String
+    ) {
         self.id = id
         self.name = name
         self.isAuction = isAuction
@@ -22,7 +30,7 @@ final class Sale: NSObject, JSONAbleType {
         self.auctionState = state
     }
 
-    static func fromJSON(_ json:[String: Any]) -> Sale {
+    static func fromJSON(_ json: [String: Any]) -> Sale {
         let json = JSON(json)
 
         let id = json["id"].stringValue
@@ -33,7 +41,15 @@ final class Sale: NSObject, JSONAbleType {
         let artworkCount = json["eligible_sale_artworks_count"].intValue
         let state = json["auction_state"].stringValue
 
-        let sale = Sale(id: id, name:name, isAuction: isAuction, startDate: startDate, endDate: endDate, artworkCount: artworkCount, state: state)
+        let sale = Sale(
+            id: id,
+            name: name,
+            isAuction: isAuction,
+            startDate: startDate,
+            endDate: endDate,
+            artworkCount: artworkCount,
+            state: state
+        )
 
         if let buyersPremiumDict = json["buyers_premium"].object as? [String: AnyObject] {
             sale.buyersPremium = BuyersPremium.fromJSON(buyersPremiumDict)
@@ -42,13 +58,14 @@ final class Sale: NSObject, JSONAbleType {
         return sale
     }
 
-    func isActive(_ systemTime:SystemTime) -> Bool {
+    func isActive(_ systemTime: SystemTime) -> Bool {
         let now = systemTime.date()
         guard let endDate = endDate else {
             // Live sales don't have end dates, and the kiosk isn't compatible with live sales.
             // So we'll say any live sale is "not active"
             return false
         }
-        return (now as NSDate).earlierDate(startDate) == startDate && (now as NSDate).laterDate(endDate) == endDate
+        return (now as NSDate).earlierDate(startDate) == startDate
+            && (now as NSDate).laterDate(endDate) == endDate
     }
 }

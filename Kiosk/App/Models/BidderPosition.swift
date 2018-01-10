@@ -26,6 +26,11 @@ final class BidderPosition: NSObject, JSONAbleType {
             bid = Bid.fromJSON(bidDictionary)
         }
 
-        return BidderPosition(id: id, highestBid: bid, maxBidAmountCents: maxBidAmount, processedAt: processedAt)
+        return BidderPosition(
+            id: id,
+            highestBid: bid,
+            maxBidAmountCents: maxBidAmount,
+            processedAt: processedAt
+        )
     }
 }

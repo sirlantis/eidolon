@@ -10,7 +10,7 @@ enum ReserveStatus: String {
         return self == .ReserveNotMet
     }
 
-    static func initOrDefault (_ rawValue: String?) -> ReserveStatus {
+    static func initOrDefault(_ rawValue: String?) -> ReserveStatus {
         return ReserveStatus(rawValue: rawValue ?? "") ?? .NoReserve
     }
 }
@@ -31,7 +31,7 @@ final class SaleArtwork: NSObject, JSONAbleType {
 
     var openingBidCents: NSNumber?
     var minimumNextBidCents: NSNumber?
-    
+
     dynamic var highestBidCents: NSNumber?
     var estimateCents: Currency?
     var lowEstimateCents: Currency?
@@ -58,7 +58,8 @@ final class SaleArtwork: NSObject, JSONAbleType {
         let artworkDict = json["artwork"].object as! [String: AnyObject]
         let artwork = Artwork.fromJSON(artworkDict)
 
-        let saleArtwork = SaleArtwork(id: id, artwork: artwork, currencySymbol: currencySymbol) as SaleArtwork
+        let saleArtwork = SaleArtwork(id: id, artwork: artwork, currencySymbol: currencySymbol)
+            as SaleArtwork
 
         if let highestBidDict = json["highest_bid"].object as? [String: AnyObject] {
             saleArtwork.saleHighestBid = Bid.fromJSON(highestBidDict)
@@ -78,7 +79,7 @@ final class SaleArtwork: NSObject, JSONAbleType {
 
         return saleArtwork
     }
-    
+
     func updateWithValues(_ newSaleArtwork: SaleArtwork) {
         saleHighestBid = newSaleArtwork.saleHighestBid
         auctionID = newSaleArtwork.auctionID
@@ -96,6 +97,6 @@ final class SaleArtwork: NSObject, JSONAbleType {
     }
 }
 
-func ==(lhs: SaleArtwork, rhs: SaleArtwork) -> Bool {
+func == (lhs: SaleArtwork, rhs: SaleArtwork) -> Bool {
     return lhs.id == rhs.id
 }

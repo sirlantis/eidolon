@@ -17,7 +17,9 @@ extension AppDelegate {
     }
 
     internal var appViewController: AppViewController! {
-        let nav = self.window?.rootViewController?.findChildViewControllerOfType(UINavigationController.self) as? UINavigationController
+        let nav = self.window?.rootViewController?.findChildViewControllerOfType(
+                UINavigationController.self
+            ) as? UINavigationController
         return nav?.delegate as? AppViewController
     }
 
@@ -31,20 +33,26 @@ extension AppDelegate {
         helpButton.alignTop(nil, leading: nil, bottom: "-24", trailing: "-24", to: window)
         window?.layoutIfNeeded()
 
-        helpIsVisisble.subscribe(onNext: { visisble in
-            let image: UIImage? = visisble ?  UIImage(named: "xbtn_white")?.withRenderingMode(.alwaysOriginal) : nil
-            let text: String? = visisble ? nil : "HELP"
+        helpIsVisisble
+            .subscribe(onNext: { visisble in
+                let image: UIImage? = visisble
+                    ? UIImage(named: "xbtn_white")?.withRenderingMode(.alwaysOriginal)
+                    : nil
+                let text: String? = visisble ? nil : "HELP"
 
-            self.helpButton.setTitle(text, for: .normal)
-            self.helpButton.setImage(image, for: .normal)
+                self.helpButton.setTitle(text, for: .normal)
+                self.helpButton.setImage(image, for: .normal)
 
-            let transition = CATransition()
-            transition.duration = AnimationDuration.Normal
-            transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-            transition.type = kCATransitionFade
-            self.helpButton.layer.add(transition, forKey: "fade")
+                let transition = CATransition()
+                transition.duration = AnimationDuration.Normal
+                transition.timingFunction = CAMediaTimingFunction(
+                    name: kCAMediaTimingFunctionEaseInEaseOut
+                )
+                transition.type = kCATransitionFade
+                self.helpButton.layer.add(transition, forKey: "fade")
 
-        }).addDisposableTo(rx_disposeBag)
+            })
+            .addDisposableTo(rx_disposeBag)
     }
 
     func setHelpButtonHidden(_ hidden: Bool) {
@@ -61,22 +69,24 @@ extension AppDelegate {
     func showBuyersPremiumCommand(enabled: Observable<Bool> = .just(true)) -> CocoaAction {
         return CocoaAction(enabledIf: enabled) { _ in
             self.hideAllTheThings()
-                .then(self.showWebController(address: "https://m.artsy.net/auction/\(self.sale.id)/buyers-premium"))
+                .then(
+                    self.showWebController(
+                        address: "https://m.artsy.net/auction/\(self.sale.id)/buyers-premium"
+                    )
+                )
                 .map(void)
         }
     }
 
     func registerToBidCommand(enabled: Observable<Bool> = .just(true)) -> CocoaAction {
         return CocoaAction(enabledIf: enabled) { _ in
-            self.hideAllTheThings()
-                .then(self.showRegistration())
+            self.hideAllTheThings().then(self.showRegistration())
         }
     }
 
     func requestBidderDetailsCommand(enabled: Observable<Bool> = .just(true)) -> CocoaAction {
         return CocoaAction(enabledIf: enabled) { _ in
-            self.hideHelp()
-                .then(self.showBidderDetailsRetrieval())
+            self.hideHelp().then(self.showBidderDetailsRetrieval())
         }
     }
 
@@ -100,11 +110,8 @@ extension AppDelegate {
     func ensureAction(action: CocoaAction) -> CocoaAction {
         retainedAction = action
         let action = CocoaAction { input -> Observable<Void> in
-            return retainedAction?
-                .execute(input)
-                .do(onCompleted: {
-                    retainedAction = nil
-                }) ?? Observable.just(Void())
+            return retainedAction?.execute(input).do(onCompleted: { retainedAction = nil })
+                ?? Observable.just(Void())
         }
 
         return action
@@ -112,13 +119,17 @@ extension AppDelegate {
 
     func showPrivacyPolicyCommand() -> CocoaAction {
         return ensureAction(action: CocoaAction { _ in
-            self.hideAllTheThings().then(self.showWebController(address: "https://artsy.net/privacy"))
+            self.hideAllTheThings().then(
+                self.showWebController(address: "https://artsy.net/privacy")
+            )
         })
     }
 
     func showConditionsOfSaleCommand() -> CocoaAction {
         return ensureAction(action: CocoaAction { _ in
-            self.hideAllTheThings().then(self.showWebController(address: "https://artsy.net/conditions-of-sale"))
+            self.hideAllTheThings().then(
+                self.showWebController(address: "https://artsy.net/conditions-of-sale")
+            )
         })
     }
 }
@@ -129,14 +140,14 @@ private extension AppDelegate {
 
     // MARK: - s that do things
 
-    func ツ() -> Observable<Void>{
+    func ツ() -> Observable<Void> {
         return hideAllTheThings()
     }
 
     func hideAllTheThings() -> Observable<Void> {
         return self.closeFulfillmentViewController().then(self.hideHelp())
     }
-    
+
     func showBidderDetailsRetrieval() -> Observable<Void> {
         let appVC = self.appViewController
         let presentingViewController: UIViewController = (appVC!.presentedViewController ?? appVC!)
@@ -148,12 +159,14 @@ private extension AppDelegate {
             ARAnalytics.event("Register To Bid Tapped")
 
             let storyboard = UIStoryboard.fulfillment()
-            let containerController = storyboard.instantiateInitialViewController() as! FulfillmentContainerViewController
+            let containerController = storyboard.instantiateInitialViewController()
+                as! FulfillmentContainerViewController
             containerController.allowAnimations = self.appViewController.allowAnimations
 
             if let internalNav: FulfillmentNavigationController = containerController.internalNavigationController() {
                 internalNav.auctionID = self.appViewController.auctionID
-                let registerVC = storyboard.viewController(withID: .RegisterAnAccount) as! RegisterViewController
+                let registerVC = storyboard.viewController(withID: .RegisterAnAccount)
+                    as! RegisterViewController
                 registerVC.placingBid = false
                 registerVC.provider = self.provider
                 internalNav.auctionID = self.appViewController.auctionID
@@ -176,10 +189,14 @@ private extension AppDelegate {
             helpViewController.modalPresentationStyle = .custom
             helpViewController.transitioningDelegate = self
 
-            self.window?.rootViewController?.present(helpViewController, animated: true, completion: {
-                self.helpViewController.value = helpViewController
-                sendDispatchCompleted(to: observer)
-            })
+            self.window?.rootViewController?.present(
+                helpViewController,
+                animated: true,
+                completion: {
+                    self.helpViewController.value = helpViewController
+                    sendDispatchCompleted(to: observer)
+                }
+            )
 
             return Disposables.create()
         }
@@ -187,7 +204,8 @@ private extension AppDelegate {
 
     func closeFulfillmentViewController() -> Observable<Void> {
         let close: Observable<Void> = Observable.create { observer in
-            (self.appViewController.presentedViewController as? FulfillmentContainerViewController)?.closeFulfillmentModal() {
+            (self.appViewController.presentedViewController
+                as? FulfillmentContainerViewController)?.closeFulfillmentModal() {
                 sendDispatchCompleted(to: observer)
             }
 
@@ -205,14 +223,14 @@ private extension AppDelegate {
     }
 
     func showWebController(address: String) -> Observable<Void> {
-        return hideWebViewController().then (
+        return hideWebViewController().then(
             Observable.create { observer in
                 let webController = ModalWebViewController(url: NSURL(string: address)! as URL)
 
                 let nav = UINavigationController(rootViewController: webController)
                 nav.modalPresentationStyle = .formSheet
 
-                ARAnalytics.event("Show Web View", withProperties: ["url" : address])
+                ARAnalytics.event("Show Web View", withProperties: ["url": address])
                 self.window?.rootViewController?.present(nav, animated: true) {
                     sendDispatchCompleted(to: observer)
                 }
@@ -238,7 +256,6 @@ private extension AppDelegate {
                 observer.onCompleted()
             }
 
-
             return Disposables.create()
         }
     }
@@ -262,7 +279,10 @@ private extension AppDelegate {
     var fullfilmentVisible: Observable<Bool> {
         return Observable.deferred {
             return Observable.create { observer in
-                observer.onNext((self.appViewController.presentedViewController as? FulfillmentContainerViewController) != nil)
+                observer.onNext(
+                    (self.appViewController.presentedViewController
+                            as? FulfillmentContainerViewController) != nil
+                )
                 observer.onCompleted()
 
                 return Disposables.create()
@@ -280,11 +300,17 @@ private extension AppDelegate {
 // MARK: - Help transtion animation
 
 extension AppDelegate: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController,
+        source: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
         return HelpAnimator(presenting: true)
     }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+
+    func animationController(
+        forDismissed dismissed: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
         return HelpAnimator()
     }
 }

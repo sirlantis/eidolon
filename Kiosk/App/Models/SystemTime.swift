@@ -4,12 +4,13 @@ import RxSwift
 class SystemTime {
     var systemTimeInterval: TimeInterval? = nil
 
-    init () {}
+    init() { }
 
     func sync(_ provider: Networking) -> Observable<Void> {
         let endpoint: ArtsyAPI = ArtsyAPI.systemTime
 
-        return provider.request(endpoint)
+        return provider
+            .request(endpoint)
             .filterSuccessfulStatusCodes()
             .mapJSON()
             .do(onNext: { [weak self] response in

@@ -10,7 +10,10 @@ extension UILabel {
 
         let range = ((self.text ?? "") as NSString).range(of: boldText)
         if range.location != NSNotFound {
-            attributedText.setAttributes([NSFontAttributeName: UIFont.serifSemiBoldFont(withSize: self.font.pointSize)], range: range)
+            attributedText.setAttributes(
+                [NSFontAttributeName: UIFont.serifSemiBoldFont(withSize: self.font.pointSize)],
+                range: range
+            )
         }
 
         self.attributedText = attributedText
@@ -25,7 +28,10 @@ extension UILabel {
 
         let range = ((self.text ?? "") as NSString).range(of: italicText)
         if range.location != NSNotFound {
-            attributedText.setAttributes([NSFontAttributeName: UIFont.serifItalicFont(withSize: self.font.pointSize)], range: range)
+            attributedText.setAttributes(
+                [NSFontAttributeName: UIFont.serifItalicFont(withSize: self.font.pointSize)],
+                range: range
+            )
         }
 
         self.attributedText = attributedText
@@ -37,7 +43,11 @@ extension UILabel {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = CGFloat(lineHeight)
         paragraphStyle.alignment = textAlignment
-        attributedString.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, displayText.characters.count))
+        attributedString.addAttribute(
+            NSParagraphStyleAttributeName,
+            value: paragraphStyle,
+            range: NSMakeRange(0, displayText.characters.count)
+        )
 
         attributedText = attributedString
     }

@@ -6,7 +6,7 @@ private let kNoBidsString = ""
 class SaleArtworkViewModel: NSObject {
     fileprivate let saleArtwork: SaleArtwork
 
-    init (saleArtwork: SaleArtwork) {
+    init(saleArtwork: SaleArtwork) {
         self.saleArtwork = saleArtwork
     }
 }
@@ -19,19 +19,33 @@ extension SaleArtworkViewModel {
 
     var estimateString: String {
         // Default to estimateCents
-        switch (saleArtwork.estimateCents, saleArtwork.lowEstimateCents, saleArtwork.highEstimateCents) {
-        // Default to estimateCents.
+        switch (
+            saleArtwork.estimateCents,
+            saleArtwork.lowEstimateCents,
+            saleArtwork.highEstimateCents
+        ) { // Default to estimateCents.
+
         case (.some(let estimateCents), _, _):
-            let dollars = centsToPresentableDollarsString(estimateCents, currencySymbol: saleArtwork.currencySymbol)
+            let dollars = centsToPresentableDollarsString(
+                estimateCents,
+                currencySymbol: saleArtwork.currencySymbol
+            )
             return "Estimate: \(dollars)"
 
-        // Try to extract non-nil low/high estimates.
+            // Try to extract non-nil low/high estimates.
         case (_, .some(let lowCents), .some(let highCents)):
-            let lowDollars = centsToPresentableDollarsString(lowCents, currencySymbol: saleArtwork.currencySymbol)
-            let highDollars = centsToPresentableDollarsString(highCents, currencySymbol: saleArtwork.currencySymbol)
+            let lowDollars = centsToPresentableDollarsString(
+                lowCents,
+                currencySymbol: saleArtwork.currencySymbol
+            )
+            let highDollars = centsToPresentableDollarsString(
+                highCents,
+                currencySymbol: saleArtwork.currencySymbol
+            )
             return "Estimate: \(lowDollars)–\(highDollars)"
 
-        default: return ""
+        default:
+            return ""
         }
     }
 
@@ -58,11 +72,12 @@ extension SaleArtworkViewModel {
     // Observables representing values that change over time.
 
     func numberOfBids() -> Observable<String> {
-        return saleArtwork.rx.observe(NSNumber.self, "bidCount").map { optionalBidCount -> String in
-            guard let bidCount = optionalBidCount , bidCount.intValue > 0 else {
+        return saleArtwork.rx.observe(NSNumber.self, "bidCount").map {
+                optionalBidCount -> String in
+            guard let bidCount = optionalBidCount, bidCount.intValue > 0 else {
                 return kNoBidsString
             }
-            
+
             let suffix = bidCount == 1 ? "" : "s"
             return "\(bidCount) bid\(suffix) placed"
         }
@@ -72,8 +87,11 @@ extension SaleArtworkViewModel {
     var numberOfBidsWithReserve: Observable<String> {
 
         // Ignoring highestBidCents; only there to trigger on bid update.
-        let highestBidString = saleArtwork.rx.observe(NSNumber.self, "highestBidCents").map { "\(String(describing: $0))" }
-        let reserveStatus = saleArtwork.rx.observe(String.self, "reserveStatus").map { input -> String in
+        let highestBidString = saleArtwork.rx
+            .observe(NSNumber.self, "highestBidCents")
+            .map { "\(String(describing: $0))" }
+        let reserveStatus = saleArtwork.rx.observe(String.self, "reserveStatus").map {
+                input -> String in
             switch input {
             case .some(let reserveStatus):
                 return reserveStatus
@@ -82,7 +100,8 @@ extension SaleArtworkViewModel {
             }
         }
 
-        return Observable.combineLatest([numberOfBids(), reserveStatus, highestBidString]) { strings -> String in
+        return Observable.combineLatest([numberOfBids(), reserveStatus, highestBidString]) {
+                strings -> String in
 
             let numberOfBidsString = strings[0]
             let reserveStatus = ReserveStatus.initOrDefault(strings[1])
@@ -96,7 +115,8 @@ extension SaleArtworkViewModel {
                     return "This lot has a reserve"
                 } else if reserveStatus == .ReserveNotMet {
                     return "(\(numberOfBidsString), Reserve not met)"
-                } else { // implicitly, reserveStatus is .ReserveMet
+                } else {
+                    // implicitly, reserveStatus is .ReserveMet
                     return "(\(numberOfBidsString), Reserve met)"
                 }
             }
@@ -114,20 +134,30 @@ extension SaleArtworkViewModel {
     }
 
     func forSale() -> Observable<Bool> {
-        return saleArtwork.artwork.rx.observe(NSNumber.self, "soldStatus").filterNil().map { sold in
-            return !sold.boolValue
-        }
+        return saleArtwork.artwork.rx
+            .observe(NSNumber.self, "soldStatus")
+            .filterNil()
+            .map { sold in
+                return !sold.boolValue
+            }
 
     }
 
     func currentBid(prefix: String = "", missingPrefix: String = "") -> Observable<String> {
         let currencySymbol = saleArtwork.currencySymbol
-        return saleArtwork.rx.observe(NSNumber.self, "highestBidCents").map { [weak self] highestBidCents in
+        return saleArtwork.rx.observe(NSNumber.self, "highestBidCents").map {
+                [weak self] highestBidCents in
             if let currentBidCents = highestBidCents?.currencyValue {
-                let formatted = centsToPresentableDollarsString(currentBidCents, currencySymbol: currencySymbol)
+                let formatted = centsToPresentableDollarsString(
+                    currentBidCents,
+                    currencySymbol: currencySymbol
+                )
                 return "\(prefix)\(formatted)"
             } else {
-                let formatted = centsToPresentableDollarsString(Currency(self?.saleArtwork.openingBidCents ?? 0), currencySymbol: currencySymbol)
+                let formatted = centsToPresentableDollarsString(
+                    Currency(self?.saleArtwork.openingBidCents ?? 0),
+                    currencySymbol: currencySymbol
+                )
                 return "\(missingPrefix)\(formatted)"
             }
         }
@@ -147,9 +177,8 @@ extension SaleArtworkViewModel {
             let openingBid = numbers[1]?.currencyValue
             let highestBid = numbers[2]?.currencyValue
 
-            return (bidCount > 0 ? highestBid : openingBid) ?? 0 
-            }
-            .map { centsToPresentableDollarsString($0, currencySymbol: currencySymbol) }
+            return (bidCount > 0 ? highestBid : openingBid) ?? 0
+        }.map { centsToPresentableDollarsString($0, currencySymbol: currencySymbol) }
     }
 
     func currentBidOrOpeningBidLabel() -> Observable<String> {

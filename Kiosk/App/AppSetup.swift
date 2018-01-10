@@ -8,7 +8,7 @@ class AppSetup {
     lazy var disableCardReader = false
     var isTesting = false
 
-    class var sharedState : AppSetup {
+    class var sharedState: AppSetup {
         struct Static {
             static let instance = AppSetup()
         }
@@ -25,7 +25,9 @@ class AppSetup {
         showDebugButtons = defaults.bool(forKey: "KioskShowDebugButtons")
         disableCardReader = defaults.bool(forKey: "KioskDisableCardReader")
 
-        if let _ = NSClassFromString("XCTest") { isTesting = true }
+        if let _ = NSClassFromString("XCTest") {
+            isTesting = true
+        }
     }
 
     var needsZipCode: Bool {

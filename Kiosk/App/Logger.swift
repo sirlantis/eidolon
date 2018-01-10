@@ -32,7 +32,12 @@ class Logger {
         fileHandle?.closeFile()
     }
 
-    func log(_ message: String, function: String = #function, file: String = #file, line: Int = #line) {
+    func log(
+        _ message: String,
+        function: String = #function,
+        file: String = #file,
+        line: Int = #line
+    ) {
         let logMessage = stringRepresentation(message, function: function, file: file, line: line)
 
         printToConsole(logMessage)
@@ -41,10 +46,15 @@ class Logger {
 }
 
 private extension Logger {
-    func stringRepresentation(_ message: String, function: String, file: String, line: Int) -> String {
+    func stringRepresentation(
+        _ message: String,
+        function: String,
+        file: String,
+        line: Int
+    ) -> String {
         let dateString = dateFormatter.string(from: Date())
 
-        let file = URL(fileURLWithPath: file).lastPathComponent 
+        let file = URL(fileURLWithPath: file).lastPathComponent
         return "\(dateString) [\(file):\(line)] \(function): \(message)\n"
     }
 

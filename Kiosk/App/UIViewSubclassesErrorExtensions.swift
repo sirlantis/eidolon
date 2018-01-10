@@ -2,7 +2,7 @@ import UIKit
 
 extension Button {
 
-    func flashError(_ message:String) {
+    func flashError(_ message: String) {
         let originalTitle = self.title(for: .normal)
 
         setTitleColor(.white, for: .disabled)
@@ -24,8 +24,6 @@ extension TextField {
 
     func flashForError() {
         self.setBorderColor(.artsyRedRegular())
-        delayToMainThread(2) {
-            self.setBorderColor(.artsyPurpleRegular())
-        }
+        delayToMainThread(2) { self.setBorderColor(.artsyPurpleRegular()) }
     }
 }

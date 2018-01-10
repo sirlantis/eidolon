@@ -10,7 +10,14 @@ class NetworkLogger: PluginType {
     let whitelist: Comparison
     let blacklist: Comparison
 
-    init(whitelist: @escaping Comparison = { _ -> Bool in return true }, blacklist: @escaping Comparison = { _ -> Bool in  return true }) {
+    init(
+        whitelist: @escaping Comparison = { _ -> Bool in
+            return true
+        },
+        blacklist: @escaping Comparison = { _ -> Bool in
+            return true
+        }
+    ) {
         self.whitelist = whitelist
         self.blacklist = blacklist
     }
@@ -27,9 +34,11 @@ class NetworkLogger: PluginType {
 
         switch result {
         case .success(let response):
-            if 200..<400 ~= (response.statusCode ) && whitelist(target) == false {
+            if 200 ..< 400 ~= (response.statusCode) && whitelist(target) == false {
                 // If the status code is OK, and if it's not in our whitelist, then don't worry about logging its response body.
-                logger.log("Received response(\(response.statusCode )) from \(response.response?.url?.absoluteString ?? String()).")
+                logger.log(
+                    "Received response(\(response.statusCode)) from \(response.response?.url?.absoluteString ?? String())."
+                )
             }
         case .failure(let error):
             // Otherwise, log everything.

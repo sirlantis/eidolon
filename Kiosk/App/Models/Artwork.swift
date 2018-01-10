@@ -31,7 +31,14 @@ final class Artwork: NSObject, JSONAbleType {
         return defaultImages?.first ?? self.images?.first
     }()
 
-    init(id: String, dateString: String, title: String, price: String, date: String, sold: NSNumber) {
+    init(
+        id: String,
+        dateString: String,
+        title: String,
+        price: String,
+        date: String,
+        sold: NSNumber
+    ) {
         self.id = id
         self.dateString = dateString
         self.title = title
@@ -49,8 +56,14 @@ final class Artwork: NSObject, JSONAbleType {
         let price = json["price"].stringValue
         let date = json["date"].stringValue
         let sold = (json["sold"].bool ?? false) as NSNumber // Default to false if parsing fails.
-        
-        let artwork = Artwork(id: id, dateString: dateString, title: title, price: price, date: date, sold: sold)
+        let artwork = Artwork(
+            id: id,
+            dateString: dateString,
+            title: title,
+            price: price,
+            date: date,
+            sold: sold
+        )
 
         artwork.additionalInfo = json["additional_information"].string
         artwork.medium = json["medium"].string
@@ -62,20 +75,27 @@ final class Artwork: NSObject, JSONAbleType {
 
         if let imageDicts = json["images"].object as? Array<Dictionary<String, AnyObject>> {
             // There's a possibility that image_versions comes back as null from the API, which fromJSON() is allergic to.
-            artwork.images = imageDicts.filter { dict -> Bool in
-                let imageVersions = (dict["image_versions"] as? [String]) ?? []
-                return imageVersions.count > 0
-            }.map { return Image.fromJSON($0) }
+            artwork.images = imageDicts
+                .filter { dict -> Bool in
+                    let imageVersions = (dict["image_versions"] as? [String]) ?? []
+                    return imageVersions.count > 0
+                }
+                .map {
+                    return Image.fromJSON($0)
+                }
         }
 
         if let dimensions = json["dimensions"].dictionary {
-            artwork.dimensions = ["in", "cm"].reduce([String](), { (array, key) -> [String] in
-                if let dimension = dimensions[key]?.string {
-                    return array + [dimension]
-                } else {
-                    return array
+            artwork.dimensions = ["in", "cm"].reduce(
+                [String](),
+                { array, key -> [String] in
+                    if let dimension = dimensions[key]?.string {
+                        return array + [dimension]
+                    } else {
+                        return array
+                    }
                 }
-            })
+            )
         }
 
         return artwork
@@ -91,17 +111,26 @@ final class Artwork: NSObject, JSONAbleType {
     }
 }
 
-private func titleAndDateAttributedString(_ title: String, dateString: String) -> NSAttributedString {
+private func titleAndDateAttributedString(
+    _ title: String,
+    dateString: String
+) -> NSAttributedString {
     let workTitle = title.isEmpty ? "Untitled" : title
 
     let workFont = UIFont.serifItalicFont(withSize: 16)!
-    let attributedString = NSMutableAttributedString(string: workTitle, attributes: [NSFontAttributeName : workFont])
-    
+    let attributedString = NSMutableAttributedString(
+        string: workTitle,
+        attributes: [NSFontAttributeName: workFont]
+    )
+
     if dateString.isNotEmpty {
         let dateFont = UIFont.serifFont(withSize: 16)!
-        let dateString = NSAttributedString(string: ", " + dateString, attributes: [NSFontAttributeName : dateFont])
+        let dateString = NSAttributedString(
+            string: ", " + dateString,
+            attributes: [NSFontAttributeName: dateFont]
+        )
         attributedString.append(dateString)
     }
-    
+
     return attributedString.copy() as! NSAttributedString
 }

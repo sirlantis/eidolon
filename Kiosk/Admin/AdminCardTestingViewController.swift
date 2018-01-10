@@ -9,25 +9,32 @@ class AdminCardTestingViewController: UIViewController {
 
     @IBOutlet weak var logTextView: UITextView!
 
-     override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
-
 
         self.logTextView.text = ""
 
         if AppSetup.sharedState.useStaging {
-            cardHandler = CardHandler(apiKey: self.keys.cardflightStagingAPIClientKey, accountToken: self.keys.cardflightStagingMerchantAccountToken)
+            cardHandler = CardHandler(
+                apiKey: self.keys.cardflightStagingAPIClientKey,
+                accountToken: self.keys.cardflightStagingMerchantAccountToken
+            )
         } else {
-            cardHandler = CardHandler(apiKey: self.keys.cardflightProductionAPIClientKey, accountToken: self.keys.cardflightProductionMerchantAccountToken)
+            cardHandler = CardHandler(
+                apiKey: self.keys.cardflightProductionAPIClientKey,
+                accountToken: self.keys.cardflightProductionMerchantAccountToken
+            )
         }
 
         cardHandler.cardStatus
-            .subscribe { (event) in
+            .subscribe { event in
                 switch event {
                 case .next(let message):
                     self.log("\(message)")
                 case .error(let error):
-                    self.log("\n====Error====\n\(error)\nThe card reader may have become disconnected.\n\n")
+                    self.log(
+                        "\n====Error====\n\(error)\nThe card reader may have become disconnected.\n\n"
+                    )
                     if self.cardHandler.card != nil {
                         self.log("==\n\(self.cardHandler.card!)\n\n")
                     }
@@ -43,7 +50,6 @@ class AdminCardTestingViewController: UIViewController {
                 }
             }
             .addDisposableTo(rx_disposeBag)
-
 
         cardHandler.startSearching()
     }

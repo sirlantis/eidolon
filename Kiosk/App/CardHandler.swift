@@ -10,14 +10,14 @@ class CardHandler: NSObject, CFTReaderDelegate {
     }
 
     var card: CFTCard?
-    
+
     let APIKey: String
     let APIToken: String
 
     var reader: CFTReader!
     lazy var sessionManager = CFTSessionManager.sharedInstance()!
 
-    init(apiKey: String, accountToken: String){
+    init(apiKey: String, accountToken: String) {
         APIKey = apiKey
         APIToken = accountToken
 
@@ -42,24 +42,26 @@ class CardHandler: NSObject, CFTReaderDelegate {
 
     func readerCardResponse(_ card: CFTCard?, withError error: Error?) {
         if let card = card {
-            self.card = card;
+            self.card = card
             _cardStatus.onNext("Got Card")
 
-            card.tokenizeCard(success: { [weak self] in
-                self?._cardStatus.onCompleted()
-                logger.log("Card was tokenized")
+            card.tokenizeCard(
+                success: { [weak self] in
+                    self?._cardStatus.onCompleted()
+                    logger.log("Card was tokenized")
 
-            }, failure: { [weak self] (error) in
-                self?._cardStatus.onNext("Card Flight Error: \(String(describing: error))");
-                logger.log("Card was not tokenizable")
-            })
-            
+                },
+                failure: { [weak self] error in
+                    self?._cardStatus.onNext("Card Flight Error: \(String(describing: error))")
+                    logger.log("Card was not tokenizable")
+                }
+            )
+
         } else if let error = error {
-            self._cardStatus.onNext("response Error \(error)");
+            self._cardStatus.onNext("response Error \(error)")
             logger.log("CardReader got a response it cannot handle")
 
-
-            reader.beginSwipe();
+            reader.beginSwipe()
         }
     }
 
@@ -70,25 +72,25 @@ class CardHandler: NSObject, CFTReaderDelegate {
     // handle other delegate call backs with the status messages
 
     func readerIsAttached() {
-        _cardStatus.onNext("Reader is attatched");
+        _cardStatus.onNext("Reader is attatched")
     }
 
     func readerIsConnecting() {
-        _cardStatus.onNext("Reader is connecting");
+        _cardStatus.onNext("Reader is connecting")
     }
 
     func readerIsDisconnected() {
-        _cardStatus.onNext("Reader is disconnected");
+        _cardStatus.onNext("Reader is disconnected")
         logger.log("Card Reader Disconnected")
     }
 
     func readerSwipeDidCancel() {
-        _cardStatus.onNext("Reader did cancel");
+        _cardStatus.onNext("Reader did cancel")
         logger.log("Card Reader was Cancelled")
     }
 
     func readerGenericResponse(_ cardData: String!) {
-        _cardStatus.onNext("Reader received non-card data: \(cardData ?? "") ");
+        _cardStatus.onNext("Reader received non-card data: \(cardData ?? "") ")
         reader.beginSwipe()
     }
 
@@ -98,9 +100,9 @@ class CardHandler: NSObject, CFTReaderDelegate {
             reader.beginSwipe()
         } else {
             if (error != nil) {
-                _cardStatus.onNext("Reader is disconnected: \(error.localizedDescription)");
+                _cardStatus.onNext("Reader is disconnected: \(error.localizedDescription)")
             } else {
-                _cardStatus.onNext("Reader is disconnected");
+                _cardStatus.onNext("Reader is disconnected")
             }
         }
     }

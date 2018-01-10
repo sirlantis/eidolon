@@ -15,7 +15,7 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
     lazy var _apiPinger: APIPingManager = {
         return APIPingManager(provider: self.provider)
     }()
-    
+
     lazy var reachability: Observable<Bool> = {
         [connectedToInternetOrStubbing(), self.apiPinger].combineLatestAnd()
     }()
@@ -24,15 +24,21 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
         self._apiPinger.letOnline
     }()
 
-    var registerToBidCommand = { () -> CocoaAction in
-        appDelegate().registerToBidCommand()
-    }
+    var registerToBidCommand = { () -> CocoaAction in appDelegate().registerToBidCommand() }
 
     class func instantiate(from storyboard: UIStoryboard) -> AppViewController {
         return storyboard.viewController(withID: .AppViewController) as! AppViewController
     }
 
-    var sale = Variable(Sale(id: "", name: "", isAuction: true, startDate: Date(), endDate: Date(), artworkCount: 0, state: ""))
+    var sale = Variable(Sale(
+        id: "",
+        name: "",
+        isAuction: true,
+        startDate: Date(),
+        endDate: Date(),
+        artworkCount: 0,
+        state: ""
+    ))
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +48,7 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
         countdownManager.setFonts()
         countdownManager.provider = provider
 
-        reachability
-            .bindTo(offlineBlockingView.rx_hidden)
-            .addDisposableTo(rx_disposeBag)
+        reachability.bindTo(offlineBlockingView.rx_hidden).addDisposableTo(rx_disposeBag)
 
         auctionRequest(provider, auctionID: auctionID)
             .bindTo(sale)
@@ -65,8 +69,11 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // This is the embed segue
-        guard let navigationController = segue.destination as? UINavigationController else { return }
-        guard let listingsViewController = navigationController.topViewController as? ListingsViewController else { return }
+        guard let navigationController = segue.destination as? UINavigationController else {
+            return
+        }
+        guard let listingsViewController = navigationController.topViewController
+                as? ListingsViewController else { return }
 
         listingsViewController.provider = provider
     }
@@ -75,7 +82,11 @@ class AppViewController: UIViewController, UINavigationControllerDelegate {
         countdownManager.invalidate()
     }
 
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        willShow viewController: UIViewController,
+        animated: Bool
+    ) {
         let hide = (viewController as? SaleArtworkZoomViewController != nil)
         countdownManager.setLabelsHiddenIfSynced(hide)
         registerToBidButton.isHidden = hide
@@ -88,18 +99,19 @@ extension AppViewController {
         if sender.state != .began {
             return
         }
-        
+
         let passwordVC = PasswordAlertViewController.alertView { [weak self] in
             self?.performSegue(.ShowAdminOptions)
             return
         }
-        self.present(passwordVC, animated: true) {}
+        self.present(passwordVC, animated: true) { }
     }
 
     func auctionRequest(_ provider: Networking, auctionID: String) -> Observable<Sale> {
         let auctionEndpoint: ArtsyAPI = ArtsyAPI.auctionInfo(auctionID: auctionID)
 
-        return provider.request(auctionEndpoint)
+        return provider
+            .request(auctionEndpoint)
             .filterSuccessfulStatusCodes()
             .mapJSON()
             .mapTo(object: Sale.self)

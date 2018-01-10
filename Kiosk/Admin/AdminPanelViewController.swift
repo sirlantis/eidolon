@@ -5,7 +5,6 @@ class AdminPanelViewController: UIViewController {
 
     @IBOutlet weak var auctionIDLabel: UILabel!
 
-
     @IBAction func backTapped(_ sender: AnyObject) {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
         appDelegate().setHelpButtonHidden(false)
@@ -40,7 +39,9 @@ class AdminPanelViewController: UIViewController {
         if APIKeys.sharedKeys.stubResponses {
             auctionIDLabel.text = "STUBBING API RESPONSES\nNOT CONTACTING ARTSY API"
         } else {
-            let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String)  ?? "Unknown"
+            let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
+                    as? String)
+                ?? "Unknown"
             auctionIDLabel.text = "\(state.auctionID), Kiosk version: \(version)"
         }
 
@@ -63,9 +64,7 @@ class AdminPanelViewController: UIViewController {
         defaults.removeObject(forKey: XAppToken.DefaultsKeys.TokenExpiry.rawValue)
 
         defaults.synchronize()
-        delayToMainThread(1){
-            exit(1)
-        }
+        delayToMainThread(1) { exit(1) }
 
     }
 
@@ -74,9 +73,7 @@ class AdminPanelViewController: UIViewController {
         let defaults = UserDefaults.standard
         defaults.set(!AppSetup.sharedState.showDebugButtons, forKey: "KioskShowDebugButtons")
         defaults.synchronize()
-        delayToMainThread(1){
-            exit(1)
-        }
+        delayToMainThread(1) { exit(1) }
 
     }
 
@@ -86,8 +83,6 @@ class AdminPanelViewController: UIViewController {
         let defaults = UserDefaults.standard
         defaults.set(!AppSetup.sharedState.disableCardReader, forKey: "KioskDisableCardReader")
         defaults.synchronize()
-        delayToMainThread(1){
-            exit(1)
-        }
+        delayToMainThread(1) { exit(1) }
     }
 }

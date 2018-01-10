@@ -21,7 +21,6 @@ extension String {
     }
 }
 
-
 // Extend the idea of occupiability to optionals. Specifically, optionals wrapping occupiable things.
 // We're relying on the RxOptional pod to provide the Occupiable protocol.
 extension Optional where Wrapped: Occupiable {
@@ -38,7 +37,6 @@ extension Optional where Wrapped: Occupiable {
         return !isNilOrEmpty
     }
 }
-
 
 extension NSNumber {
     var currencyValue: Currency {

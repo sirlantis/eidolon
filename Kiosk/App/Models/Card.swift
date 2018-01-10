@@ -8,7 +8,13 @@ final class Card: NSObject, JSONAbleType {
     let expirationMonth: String
     let expirationYear: String
 
-    init(id: String, name: String, lastDigits: String, expirationMonth: String, expirationYear: String) {
+    init(
+        id: String,
+        name: String,
+        lastDigits: String,
+        expirationMonth: String,
+        expirationYear: String
+    ) {
 
         self.id = id
         self.name = name
@@ -17,7 +23,7 @@ final class Card: NSObject, JSONAbleType {
         self.expirationYear = expirationYear
     }
 
-    static func fromJSON(_ json:[String: Any]) -> Card {
+    static func fromJSON(_ json: [String: Any]) -> Card {
         let json = JSON(json)
 
         let id = json["id"].stringValue
@@ -26,7 +32,13 @@ final class Card: NSObject, JSONAbleType {
         let expirationMonth = json["expiration_month"].stringValue
         let expirationYear = json["expiration_year"].stringValue
 
-        return Card(id: id, name: name, lastDigits: lastDigits, expirationMonth: expirationMonth, expirationYear: expirationYear)
+        return Card(
+            id: id,
+            name: name,
+            lastDigits: lastDigits,
+            expirationMonth: expirationMonth,
+            expirationYear: expirationYear
+        )
     }
 
 }
